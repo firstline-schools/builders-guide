@@ -325,9 +325,13 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
       <div class="first">
         <div class="n">1</div>
         <div>
-          <h2>Describe it to Claude</h2>
-          <p>Open Claude with your FirstLine account. Say who you are, what you want, who will use it and what it should do. Ask which way to build it and to walk you through it.</p>
-          <p class="say">“I’m an assistant principal at FirstLine. I want to see, for each of my teachers, their students’ attendance and latest assessment scores, and keep my own notes on each class. Which way should I build this? Walk me through it.”</p>
+          <h2>Describe what you want</h2>
+          <p>Open Claude with your FirstLine account and fill in the blanks. You don’t need to know which way to build it yet; Claude will tell you.</p>
+          <p class="say">“I’m a <b>[your role]</b> at FirstLine. I want a tool that <b>[what it does]</b> for <b>[who uses it]</b>. It needs <b>[what information it uses or keeps]</b>. Which way should I build it? Walk me through it.”</p>
+          <ul class="when">
+            <li><i>“…a sign-up for Saturday tutoring, for families at my school. It needs each family’s choice of session.”</i></li>
+            <li><i>“…a page showing each of my teachers’ student attendance and latest scores, for me and my principal. It needs FirstLine’s attendance and assessment data, and my notes on each class.”</i></li>
+          </ul>
           <div class="acts"><a class="btn" href="https://claude.ai" target="_blank" rel="noopener">Open Claude</a></div>
         </div>
       </div>
