@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FirstLine Builders Guide</title>
+<meta name="description" content="How anyone at FirstLine Schools builds a tool: describe it to Claude, build it where it belongs, and check it before others rely on it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root {
+  --navy: #002f60;
+  --navy-2: #0a3d73;
+  --orange: #e47727;
+  --orange-ink: #b8561a;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #16202c;
+  --muted: #5a6572;
+  --line: #dde2e8;
+  --soft: #eef2f6;
+  --chip-on: #fdf0e6;
+  --good: #1f7a4d;
+  --focus: #e47727;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0d1520;
+    --surface: #152131;
+    --ink: #e6ebf1;
+    --muted: #9aa7b6;
+    --line: #26364a;
+    --soft: #1b2a3d;
+    --chip-on: #3a2616;
+    --orange-ink: #f39a57;
+    --good: #5fc796;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d1520;
+  --surface: #152131;
+  --ink: #e6ebf1;
+  --muted: #9aa7b6;
+  --line: #26364a;
+  --soft: #1b2a3d;
+  --chip-on: #3a2616;
+  --orange-ink: #f39a57;
+  --good: #5fc796;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 'Open Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+a { color: var(--orange-ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* header */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--navy); color: #fff;
+}
+.top-inner {
+  max-width: 1120px; margin: 0 auto; padding: 10px 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.top img { height: 34px; background: #fff; border-radius: 4px; padding: 3px 6px; }
+.top .name { font-weight: 700; font-size: 16px; line-height: 1.2; }
+.top .sub { font-size: 12px; color: #ffd7b8; }
+
+/* layout */
+.wrap {
+  max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px;
+  display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 36px;
+}
+@media (max-width: 820px) { .wrap { grid-template-columns: 1fr; gap: 16px; padding-block: 16px 48px; } }
+
+nav.side { position: sticky; top: 84px; align-self: start; }
+nav.side ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+nav.side a, nav.side span {
+  display: flex; align-items: baseline; gap: 10px; padding: 8px 10px; border-radius: 6px;
+  text-decoration: none; color: var(--ink); font-size: 14px; font-weight: 500;
+}
+nav.side a:hover { background: var(--soft); }
+nav.side a[aria-current="page"] { background: var(--soft); color: var(--navy); font-weight: 700; box-shadow: inset 3px 0 0 var(--orange); }
+:root[data-theme="dark"] nav.side a[aria-current="page"] { color: var(--ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) nav.side a[aria-current="page"] { color: var(--ink); } }
+nav.side .n { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 14px; }
+nav.side span { color: var(--muted); cursor: default; }
+nav.side .soon { margin-left: auto; font-size: 11px; color: var(--muted); }
+nav.side .group { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 4px; }
+@media (max-width: 820px) {
+  nav.side { position: static; }
+  nav.side ol { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav.side .group, nav.side span { display: none; }
+  nav.side a { border: 1px solid var(--line); background: var(--surface); }
+}
+
+main { min-width: 0; }
+section.page[hidden] { display: none; }
+h1 { font-size: clamp(28px, 4vw, 38px); line-height: 1.15; margin: 0 0 12px; color: var(--navy); font-weight: 800; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 21px; line-height: 1.3; margin: 40px 0 12px; font-weight: 700; text-wrap: balance; }
+h3 { font-size: 16px; margin: 0 0 4px; font-weight: 700; }
+:root[data-theme="dark"] h1 { color: var(--ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h1 { color: var(--ink); } }
+p { margin: 0 0 12px; max-width: 68ch; }
+.lead { font-size: 18px; color: var(--muted); max-width: 62ch; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+
+/* start: three steps */
+.steps { list-style: none; padding: 0; margin: 18px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; counter-increment: s; }
+.steps li::before { content: counter(s); display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.steps p { font-size: 14px; color: var(--muted); margin: 0; }
+@media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+
+/* where tools live */
+.places { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; }
+.place { display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding: 16px; border-top: 1px solid var(--line); }
+.place:first-child { border-top: 0; }
+.place .what { font-weight: 700; }
+.place .what small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+.place .col-h { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.place p { font-size: 14px; margin: 0; }
+.gh { display: inline-block; font-size: 12px; font-weight: 600; color: var(--orange-ink); background: var(--chip-on); border-radius: 999px; padding: 1px 8px; margin-top: 6px; }
+@media (max-width: 700px) { .place { grid-template-columns: 1fr; gap: 6px; } }
+
+/* bigger */
+.bigger { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 14px; }
+.bigger div { border-top: 3px solid var(--orange); background: var(--surface); padding: 12px 14px 14px; border-radius: 0 0 8px 8px; }
+.bigger b { display: block; margin-bottom: 2px; }
+.bigger span { font-size: 14px; color: var(--muted); }
+
+/* rules */
+.rules { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.rules li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; }
+.rules li::before { content: ""; width: 10px; height: 10px; margin: 8px 0 0 8px; background: var(--navy); border-radius: 2px; }
+:root[data-theme="dark"] .rules li::before { background: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .rules li::before { background: var(--orange); } }
+.rules p { margin: 0; }
+
+.cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; padding: 12px 22px; background: var(--orange); color: #fff; font-weight: 600; border-radius: 8px; text-decoration: none; }
+.cta:hover { background: #c9621c; }
+
+/* chooser */
+.examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 24px; }
+.examples button {
+  font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.examples button:hover { border-color: var(--orange); }
+.examples button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+.chooser { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 24px; align-items: start; }
+@media (max-width: 980px) { .chooser { grid-template-columns: 1fr; } }
+fieldset { border: 0; padding: 0; margin: 0 0 20px; min-width: 0; }
+legend { font-weight: 700; margin-bottom: 8px; padding: 0; }
+.opts { display: flex; flex-direction: column; gap: 6px; }
+.opts label {
+  display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--surface); cursor: pointer; font-size: 15px; line-height: 1.4;
+}
+.opts label:hover { border-color: var(--muted); }
+.opts input { margin: 3px 0 0; accent-color: var(--orange); flex: none; }
+.opts label:has(input:checked) { border-color: var(--orange); background: var(--chip-on); }
+
+.result { position: sticky; top: 84px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+@media (max-width: 980px) { .result { position: static; } }
+.result .head { background: var(--navy); color: #fff; padding: 16px 18px; }
+.result .eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #ffd7b8; }
+.result .path { font-size: 22px; font-weight: 800; line-height: 1.2; margin-top: 2px; }
+.result .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+.result .body p { margin: 0; font-size: 15px; }
+.result h4 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.result ul { margin: 0; padding-left: 18px; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.needs { display: flex; flex-wrap: wrap; gap: 6px; }
+.needs span { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.needs span.on { border-color: var(--orange); background: var(--chip-on); color: var(--orange-ink); font-weight: 600; }
+.next { font-size: 14px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); }
+.real { font-size: 13px; color: var(--good); font-weight: 600; }
+
+/* start page: make the way forward obvious */
+.go { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 18px 0 6px; }
+.go .cta { margin-top: 0; }
+.step-link { display: flex; flex-direction: column; height: 100%; color: inherit; text-decoration: none; }
+a.step-link .go-line { margin-top: auto; padding-top: 10px; font-size: 14px; font-weight: 600; color: var(--orange-ink); }
+.step-link.off .go-line { margin-top: auto; padding-top: 10px; font-size: 13px; color: var(--muted); }
+.steps li:has(a.step-link):hover { border-color: var(--orange); }
+.steps li { display: flex; flex-direction: column; }
+.steps li::before { flex: none; }
+.place .pg { display: block; margin-top: 6px; font-size: 13px; font-weight: 600; color: var(--orange-ink); text-decoration: none; }
+.place a.pg:hover { text-decoration: underline; }
+.place .pg.off { font-weight: 400; color: var(--muted); }
+
+/* path pages */
+.example-box { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 8px; padding: 14px 16px; margin: 22px 0 4px; max-width: 76ch; }
+.example-box .eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.example-box p:last-child { margin-bottom: 0; }
+h2 .sn { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 14px; margin-right: 10px; vertical-align: 2px; }
+:root[data-theme="dark"] h2 .sn { background: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h2 .sn { background: var(--orange); } }
+ol.how { padding-left: 22px; margin: 0 0 12px; display: flex; flex-direction: column; gap: 10px; max-width: 76ch; }
+ol.how ul { margin: 6px 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.ui { font-weight: 600; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: .93em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: .88em; background: var(--soft); padding: 0 4px; border-radius: 3px; overflow-wrap: anywhere; }
+.note { background: var(--soft); border-radius: 8px; padding: 12px 14px; font-size: 15px; max-width: 76ch; margin: 12px 0; }
+.code { border: 1px solid #22344a; border-radius: 8px; overflow: hidden; margin: 12px 0 16px; background: #0f1b2b; max-width: 100%; }
+.code-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #0a1420; color: #9aa7b6; font-size: 12px; }
+.code pre { margin: 0; padding: 14px; overflow-x: auto; color: #e6ebf1; font: 13px/1.55 ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+.copy { font: inherit; font-size: 12px; color: #fff; background: transparent; border: 1px solid #3a4f68; border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.copy:hover { border-color: var(--orange); }
+.next a { font-weight: 600; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .result .body { transition: opacity .15s ease; }
+}
+
+/* path pages, v5 */
+.h1-sub { display: block; font-size: 15px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 4px; }
+.pagebox { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin: 18px 0 8px; }
+.pagebox .rules { margin: 6px 0 0; }
+.pagebox .col-h { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+ol.toc { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 15px; }
+@media (max-width: 760px) { .pagebox { grid-template-columns: 1fr; } }
+.recipe { border-top: 1px solid var(--line); margin-top: 32px; padding-top: 4px; scroll-margin-top: 84px; }
+.recipe h2 { margin-top: 20px; margin-bottom: 2px; }
+.recipe .aud { color: var(--orange-ink); font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+.recipe .ex { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 8px; padding: 10px 14px; font-size: 15px; max-width: 76ch; }
+.recipe ol.how li .code { margin-top: 8px; }
+.tbd { display: inline-block; font-size: 12px; font-weight: 700; color: #8a5a00; background: #fff1cc; border-radius: 999px; padding: 0 8px; }
+.dbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 18px; }
+.db { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.db-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 10px; margin-bottom: 6px; }
+.db p { font-size: 15px; }
+.db dl { margin: 0; font-size: 14px; }
+.db dt { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+.db dd { margin: 2px 0 0; }
+.st { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 9px; white-space: nowrap; }
+.st.ok { color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.st.test { color: #8a5a00; background: #fff1cc; }
+.checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 18px; }
+.check { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.check ul { margin: 6px 0 10px; padding-left: 18px; font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
+.check .who { font-size: 14px; color: var(--muted); margin: 0; padding-top: 10px; border-top: 1px solid var(--line); }
+.result .links { margin: 0; padding-left: 18px; font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
+.result .links a { font-weight: 600; }
+.sts { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 8px; padding: 14px 16px; margin: 18px 0 4px; max-width: 80ch; }
+.sts .eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.sts-links { margin: 0 0 10px; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.sts-links a { font-weight: 600; }
+:root[data-theme="dark"] .sts { border-left-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sts { border-left-color: var(--orange); } }
+
+/* one-page site */
+.wrap { display: block; max-width: 980px; }
+.hero h1 { margin-bottom: 8px; }
+.four { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-direction: column; gap: 14px; counter-reset: f; }
+.four > li { counter-increment: f; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+.four > li::before { content: counter(f); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 800; font-size: 18px; }
+.four h2 { margin: 6px 0 6px; font-size: 20px; }
+.four p { margin: 0 0 10px; }
+.four .acts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 8px; font-size: 15px; }
+.four .acts a.btn { display: inline-block; padding: 8px 16px; background: var(--orange); color: #fff; font-weight: 600; border-radius: 8px; text-decoration: none; }
+.four .acts a.btn:hover { background: #c9621c; }
+.say { background: var(--soft); border-radius: 8px; padding: 10px 14px; font-size: 15px; font-style: italic; max-width: 72ch; }
+.when { margin: 6px 0 10px; padding-left: 18px; font-size: 15px; }
+.ref-h { margin-top: 48px; }
+details.fold { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-top: 12px; scroll-margin-top: 84px; }
+details.fold > summary { cursor: pointer; padding: 16px 18px; font-weight: 700; font-size: 18px; list-style: none; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::before { content: '+'; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); font-size: 15px; color: var(--orange-ink); flex: none; }
+details.fold[open] > summary::before { content: '\2212'; }
+details.fold > summary small { font-weight: 400; font-size: 14px; color: var(--muted); }
+details.fold > .inner { padding: 0 18px 20px; border-top: 1px solid var(--line); }
+details.fold > .inner > .lead { margin-top: 14px; }
+details.fold .recipe:first-of-type { margin-top: 20px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <img src="fls-logo.png" alt="FirstLine Schools">
+    <div>
+      <div class="name">Builders Guide</div>
+      <div class="sub">Make a tool, share it the right way</div>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <main>
+
+    <section class="hero" id="start">
+      <h1>Build a tool for FirstLine</h1>
+      <p class="lead">Most tools start in a conversation with Claude and live in Google. Four steps, whatever you’re making.</p>
+      <ol class="four">
+        <li><div>
+          <h2>Describe it to Claude</h2>
+          <p>Open Claude with your FirstLine account. Say who you are, what you want, who will use it and what it should do. Ask where it should live and to walk you through it.</p>
+          <p class="say">“I’m an assistant principal at FirstLine. I want a form I fill in after each walkthrough, and an email every Friday summarizing the week. Where should this live? Walk me through building it.”</p>
+          <div class="acts"><a class="btn" href="https://claude.ai" target="_blank" rel="noopener">Open Claude</a></div>
+        </div></li>
+        <li><div>
+          <h2>Build it where it belongs</h2>
+          <p>Most tools live in <b>Google</b> (Forms, Sheets, Apps Script) or in <b>Claude</b> itself. Claude will tell you which. The recipes below have the exact clicks.</p>
+          <div class="acts"><a href="#google">Google recipes</a><a href="#claude">Claude recipes</a><a href="#path">Not sure? Six quick questions</a></div>
+        </div></li>
+        <li><div>
+          <h2>If it needs its own server, ask for GitHub</h2>
+          <p>Only a few tools need this. You need it when:</p>
+          <ul class="when">
+            <li>people see different things by role or school,</li>
+            <li>it reads FirstLine’s data (rosters, attendance, assessments) on its own,</li>
+            <li>it keeps records someone reviews later, or</li>
+            <li>students use it.</li>
+          </ul>
+          <p>Ask for access with the form, then keep building in claude.ai/code, still in your browser.</p>
+          <div class="acts"><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">Request GitHub access</a><a href="#backend">Back-end recipes</a></div>
+        </div></li>
+        <li><div>
+          <h2>Check it before others rely on it</h2>
+          <p>Go through the short checklist, then show it to your supervisor. Tools that run on their own, keep records or that students use get a fuller review.</p>
+          <div class="acts"><a href="#check">The checklist</a></div>
+        </div></li>
+      </ol>
+
+      <h2>Rules for every tool</h2>
+      <ul class="rules">
+        <li><p><b>It looks like FirstLine.</b> Navy <code>#002F60</code>, orange <code>#E47727</code>, Open Sans on screen. The rest is in the <a href="https://drive.google.com/drive/u/0/folders/1hWkHbBs_c6eLDvDjwCOIUoykutwxz6kC" target="_blank" rel="noopener">FirstLine branding guide</a>.</p></li>
+        <li><p><b>FirstLine information stays behind a FirstLine sign-in.</b> Share with “FirstLine Schools”, never “Anyone with the link”. Nothing about a student or staff member on a public page.</p></li>
+        <li><p><b>Student information goes only to the people who need it.</b> A Sheet shared with the right staff is fine day to day. Trends over time or across schools belong on the back end.</p></li>
+        <li><p><b>It has an owner.</b> One named person keeps it running. If you change roles, hand it over first.</p></li>
+      </ul>
+    </section>
+<h2 class="ref-h">Step-by-step recipes</h2><p class="muted">Open the one you need.</p><details class="fold" id="claude"><summary>Claude<small>claude.ai</small></summary><div class="inner"><p class="lead">For drafts, one-off pages and small interactive tools you build by describing them, and for asking questions of FirstLine’s data. Everything here runs on your FirstLine Claude account.</p><div class="pagebox"><div><div class="col-h">What you need</div><ul class="rules"><li><p>Go to <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, choose <span class="ui">Continue with Google</span> and use your FirstLine account. That puts you in FirstLine’s Enterprise workspace.</p></li><li><p>Never use a personal Claude account for FirstLine work. The data protections come with the FirstLine one.</p></li></ul></div><div><div class="col-h">Recipes</div><ol class="toc"><li><a href="#claude-page">Publish a page from Claude</a></li><li><a href="#claude-checklist">An interactive checklist that remembers each person’s ticks</a></li><li><a href="#claude-shared">A small tool with shared entries</a></li><li><a href="#claude-bq">Ask questions of FirstLine’s data: the BQ Project</a></li><li><a href="#claude-sheet">Pull FirstLine data into a Sheet, then publish it</a></li></ol></div></div><article class="recipe" id="claude-page"><h2>Publish a page from Claude</h2><p class="aud">Fastest. Staff only until you have tested sharing.</p><p class="ex"><b>Example:</b> A weekly homework page or a one-page explainer. Write the content in a Doc first, with nothing about an individual student in it.</p><ol class="how"><li>In Claude: <i>"Turn this into a single mobile-friendly HTML page. FirstLine colors: navy #002F60, orange #E47727. Font: Open Sans."</i> Paste your content.</li><li>The page appears in the panel on the right. Use <span class="ui">Preview</span> to see it. Ask for changes in the chat; each one updates the same page.</li><li>At the top of that panel click <span class="ui">Share</span> → <span class="ui">Publish</span>. Copy the link (claude.ai/artifact/…).</li><li>Test who can open it: send the link to one colleague and to one personal email address. Whether someone without a FirstLine Claude account can open it is set by FirstLine’s Claude administrator, not by you. Until you have tested, treat it as staff only, which rules it out for families and students.</li><li>To update: keep working in the same chat, then <span class="ui">Share</span> → <span class="ui">Publish</span> again. The link stays the same.</li></ol></article><article class="recipe" id="claude-checklist"><h2>An interactive checklist that remembers each person’s ticks</h2><p class="aud">Staff. Each viewer’s ticks stay in their own browser.</p><p class="ex"><b>Example:</b> A weekly team checklist that lives on paper today.</p><ol class="how"><li>Paste the checklist into Claude: <i>"Make an interactive checklist page. Remember each viewer’s ticks in their own browser. FirstLine colors, Open Sans."</i></li><li>In Preview: tick three boxes, reload, and confirm they stayed ticked.</li><li><span class="ui">Share</span> → <span class="ui">Publish</span>. Copy the link and write down who can open it once you have tested.</li><li>Ticks live in each person’s browser. They do not follow someone to another device, and nobody else sees them.</li></ol></article><article class="recipe" id="claude-shared"><h2>A small tool with shared entries</h2><p class="aud">A sign-up or simple shared tracker for staff.</p><p class="ex"><b>Example:</b> A sign-up sheet for PD sessions, or a shared list of who is covering which duty.</p><ol class="how"><li>Ask Claude for a page whose entries are shared across everyone who opens it. This uses a page capability for shared data that FirstLine’s Claude administrator enables.</li><li>Publish, share it with the staff who need it, and write down who can see and who can edit.</li><li>Not for student information, and not for anything that sends email.</li></ol></article><article class="recipe" id="claude-bq"><h2>Ask questions of FirstLine’s data: the BQ Project</h2><p class="aud">Ask in plain English; see only your own students.</p><p class="ex"><b>Example:</b> "Which of my students missed more than three days this month?" answered from the real attendance data.</p><ol class="how"><li>In claude.ai, open <span class="ui">Projects</span>, then the <span class="ui">Organization</span> tab, and choose <b>BigQuery Student Data</b>. It is shared with all of FirstLine, so nobody has to add you.</li><li>In the Project, when it asks you to connect BigQuery, sign in with your own FirstLine Google account. The connection knows who you are, and the data only returns the students you are allowed to see: your school, or several schools if you lead more than one.</li><li>If it asks which project ID to use, the answer is <code>fls-teacher-data</code>.</li><li>Ask in plain English. Never paste student data into the chat; the connection is the only door.</li><li>An empty answer usually means "not one of your students", not missing data.</li></ol></article><article class="recipe" id="claude-sheet"><h2>Pull FirstLine data into a Sheet, then publish it</h2><p class="aud">A school’s live tracker, refreshed by a person through Claude.</p><p class="ex"><b>Example:</b> A real FirstLine tool: one school’s 3rd and 4th grade mastery tracker. Data comes from the BQ Project and a few other sources into a Sheet, with Claude helping automate the pull. An Apps Script web app turns the Sheet into a page with tabs, filters and a support status for each student.</p><ol class="how"><li>Pull the data you need through the BQ Project into a Sheet, with Claude doing the work.</li><li>Publish the Sheet as a page with an Apps Script web app: <a href="#google-webapp">the Google page, "A Sheet as a live web page"</a>.</li><li><b>Set who can see it before anyone opens it.</b> A page with student names and scores must open only for the staff who work with those students. Use <span class="ui">Execute as: User accessing the web app</span> and share the Sheet only with those staff. <span class="ui">Execute as: Me</span> plus <span class="ui">Anyone within FirstLine Schools</span> shows every student to every FirstLine account.</li><li>Someone has to refresh it. When it should update with nobody pulling the data, or other schools want the same page, it has outgrown this route: <a href="#backend-move">Move an Apps Script tool to code</a>.</li></ol></article></div></details><details class="fold" id="google"><summary>Google<small>Sites, Forms, Sheets, Looker Studio, Apps Script</small></summary><div class="inner"><p class="lead">For a page, a form, a tracker or a small automation. Everything here runs on your FirstLine Google account, with nothing to install. Apps Script is under <span class="ui">Extensions</span> → <span class="ui">Apps Script</span> in any Sheet.</p><div class="pagebox"><div><div class="col-h">What you need</div><ul class="rules"><li><p>Your FirstLine Google account. Sites, Forms, Sheets, Looker Studio and Apps Script all run on it. Nothing to set up.</p></li></ul></div><div><div class="col-h">Recipes</div><ol class="toc"><li><a href="#google-site">A public page: Google Sites</a></li><li><a href="#google-restricted">A page only some people can open</a></li><li><a href="#google-webapp">A Sheet as a live web page</a></li><li><a href="#google-looker">Charts from a Sheet: Looker Studio</a></li><li><a href="#google-auto">A PD survey that sends each presenter their own results</a></li></ol></div></div><article class="recipe" id="google-site"><h2>A public page: Google Sites</h2><p class="aud">Families. Anyone with the link.</p><p class="ex"><b>Example:</b> The homework page: a weekly page families open on a phone. Write it in a Doc first: week, reading, math, a note home, links. Remove anything about an individual student.</p><ol class="how"><li>Open <a href="https://sites.google.com/new" target="_blank" rel="noopener">sites.google.com/new</a> signed in with your FirstLine account. Choose <span class="ui">Blank site</span>.</li><li>Paste the content section by section. <span class="ui">Themes</span> → custom: primary color #002F60, accent #E47727, font Open Sans, the logo from the branding guide.</li><li><span class="ui">Publish</span> (top right). Web address: something short like <i>grade5-homework</i>. The site lives at sites.google.com/firstlineschools.org/grade5-homework.</li><li><span class="ui">Who can view my site</span> → <span class="ui">Manage</span>. For families, set the published site to <span class="ui">Anyone</span>. Leave the draft restricted to you and any co-editor.</li><li>Open the link in a private browser window to see exactly what a parent sees.</li><li>To update: edit, then <span class="ui">Publish</span> again. The address never changes.</li></ol></article><article class="recipe" id="google-restricted"><h2>A page only some people can open</h2><p class="aud">FirstLine accounts, one school, or a named team.</p><p class="ex"><b>Example:</b> A weekly team checklist: publish it restricted to your team, and confirm someone outside the team is refused.</p><ol class="how"><li><b>Google Sites, restricted.</b> Build the page as above, then <span class="ui">Publish</span> → <span class="ui">Who can view my site</span> → <span class="ui">Manage</span>.</li><li>Whole network: under the published site choose <span class="ui">Restricted</span>, then <span class="ui">Anyone at FirstLine Schools with the link</span>. A named team or one school: keep <span class="ui">Restricted</span> and add each address, or a Google Group, as a published viewer.</li><li>Test it: open the link in a private window with no FirstLine sign-in. You should get a request-access screen.</li><li><b>Or an Apps Script web app,</b> when you want your own design. In any Sheet: <span class="ui">Extensions</span> → <span class="ui">Apps Script</span>. Replace Code.gs with the code below. <span class="ui">File</span> → <span class="ui">New</span> → <span class="ui">HTML</span>, name it <i>Index</i>, and paste the page Claude made you.<div class="code"><div class="code-bar"><span>Code.gs</span><button type="button" class="copy" data-for="code-5">Copy</button></div><pre id="code-5">function doGet() {
+  return HtmlService.createHtmlOutputFromFile(&#x27;Index&#x27;)
+    .setTitle(&#x27;Team checklist&#x27;)
+    .addMetaTag(&#x27;viewport&#x27;, &#x27;width=device-width, initial-scale=1&#x27;);
+}</pre></div></li><li><span class="ui">Deploy</span> → <span class="ui">New deployment</span> → gear icon → <span class="ui">Web app</span>. Execute as: <span class="ui">User accessing the web app</span>, so the page runs with each viewer’s own permissions. Who has access: <span class="ui">Anyone within FirstLine Schools</span>. <span class="ui">Deploy</span>, authorize, and copy the URL ending in /exec.</li><li>Later changes: <span class="ui">Deploy</span> → <span class="ui">Manage deployments</span> → pencil → <span class="ui">Version: New version</span> → <span class="ui">Deploy</span>. The /exec URL stays the same.</li></ol></article><article class="recipe" id="google-webapp"><h2>A Sheet as a live web page</h2><p class="aud">The page shows the current Sheet every time it opens.</p><p class="ex"><b>Example:</b> A duty schedule or club roster your team keeps in a Sheet becomes a page. It is the same route the school mastery tracker uses, with data pulled from the BQ Project.</p><ol class="how"><li>In the Sheet: <span class="ui">Extensions</span> → <span class="ui">Apps Script</span>. In Code.gs:<div class="code"><div class="code-bar"><span>Code.gs</span><button type="button" class="copy" data-for="code-6">Copy</button></div><pre id="code-6">function doGet() {
+  const sheet = SpreadsheetApp.getActive().getSheetByName(&#x27;Schedule&#x27;);
+  const rows = sheet.getDataRange().getDisplayValues();   // strings, as shown in the Sheet
+  const t = HtmlService.createTemplateFromFile(&#x27;Index&#x27;);
+  t.header = rows[0];
+  t.rows = rows.slice(1);
+  return t.evaluate().setTitle(&#x27;Schedule&#x27;)
+    .addMetaTag(&#x27;viewport&#x27;, &#x27;width=device-width, initial-scale=1&#x27;);
+}</pre></div></li><li><span class="ui">File</span> → <span class="ui">New</span> → <span class="ui">HTML</span>, name it <i>Index</i>. Ask Claude for a mobile-friendly table in FirstLine colors that uses these lines:<div class="code"><div class="code-bar"><span>Index.html</span><button type="button" class="copy" data-for="code-7">Copy</button></div><pre id="code-7">&lt;table&gt;
+  &lt;tr&gt;&lt;? for (const h of header) { ?&gt;&lt;th&gt;&lt;?= h ?&gt;&lt;/th&gt;&lt;? } ?&gt;&lt;/tr&gt;
+  &lt;? for (const r of rows) { ?&gt;
+    &lt;tr&gt;&lt;? for (const c of r) { ?&gt;&lt;td&gt;&lt;?= c ?&gt;&lt;/td&gt;&lt;? } ?&gt;&lt;/tr&gt;
+  &lt;? } ?&gt;
+&lt;/table&gt;</pre></div></li><li><span class="ui">Deploy</span> → <span class="ui">New deployment</span> → <span class="ui">Web app</span>. Then decide <b>Execute as</b>, which decides who sees what:</li><li><b>Execute as: Me.</b> The page reads the Sheet as you, so viewers don’t need access to the Sheet, and <b>every viewer sees the whole tab</b>. Fine for a duty schedule. Not for anything about a student or a staff member unless Who has access is narrowed to match.</li><li><b>Execute as: User accessing the web app.</b> The page reads the Sheet as the viewer. Share the Sheet only with the people who should see it, and everyone else is refused. Use this for anything about students. Each viewer approves the script once, on their first visit.</li><li>Who has access: <span class="ui">Anyone within FirstLine Schools</span>, or <span class="ui">Anyone</span> only if the tab holds nothing personal. Copy the /exec URL, change a cell, reload: the change shows.</li><li>Code changes later: <span class="ui">Manage deployments</span> → pencil → <span class="ui">New version</span> → <span class="ui">Deploy</span>.</li></ol></article><article class="recipe" id="google-looker"><h2>Charts from a Sheet: Looker Studio</h2><p class="aud">Charts, filters, scheduled refresh.</p><p class="ex"><b>Example:</b> The same Sheet as a report with a chart and a filter.</p><ol class="how"><li><a href="https://lookerstudio.google.com/" target="_blank" rel="noopener">lookerstudio.google.com</a> → <span class="ui">Create</span> → <span class="ui">Report</span>.</li><li><span class="ui">Add data</span> → <span class="ui">Google Sheets</span> → pick the spreadsheet and the tab. Tick <span class="ui">Use first row as headers</span>. <span class="ui">Add</span>.</li><li><span class="ui">Add a chart</span> → <span class="ui">Table</span>. Set Dimension and Metric from the field list. One chart that answers one question.</li><li><span class="ui">Share</span> → <span class="ui">Manage access</span>. Link settings: <span class="ui">Restricted</span>, then <span class="ui">Anyone at FirstLine Schools with the link can view</span>. For named people, add their addresses.</li><li>Freshness: <span class="ui">Resource</span> → <span class="ui">Manage added data sources</span> → <span class="ui">Edit</span> → <span class="ui">Data freshness</span>. Sheets sources refresh every 15 minutes to 12 hours.</li><li>Viewers see whatever the source Sheet contains. Looker Studio does not filter by who is looking, so if people should see different slices, this is not the tool.</li><li>Write the definition of each number under its chart in a text box. That stops the "why is your number different" conversation.</li></ol></article><article class="recipe" id="google-auto"><h2>A PD survey that sends each presenter their own results</h2><p class="aud">A form that runs itself every week.</p><p class="ex"><b>Example:</b> After each PD session, staff answer five questions on a phone. Every Friday at 3, each presenter gets an email with their own average rating and comments from the week, and nobody else’s. It runs in test mode, sending everything to you, for a week first.</p><ol class="how"><li>Write it down first, in a Doc: the questions; whether answers are anonymous or named; who sees the Sheet (the PD lead, not the presenters); and a Must Never list: "never sends one presenter’s comments to another", "never sends outside @firstlineschools.org".</li><li>At <a href="https://forms.google.com" target="_blank" rel="noopener">forms.google.com</a> → <span class="ui">Blank form</span>, add five questions with these exact titles: <b>Session</b> (<span class="ui">Dropdown</span>), <b>Presenter</b> (<span class="ui">Dropdown</span>), <b>How useful was this session?</b> (<span class="ui">Linear scale</span>, 1 to 5), <b>One thing you will use</b> (<span class="ui">Paragraph</span>), <b>What would make it better?</b> (<span class="ui">Paragraph</span>). Make the first three required.</li><li><b>Anonymous or named:</b> <span class="ui">Settings</span> → <span class="ui">Responses</span>. Turn on <span class="ui">Restrict to users in FirstLine Schools and its trusted organizations</span> either way. For anonymous, set <span class="ui">Collect email addresses</span> to <span class="ui">Do not collect</span>: people still sign in, but their address isn’t recorded. For named, choose <span class="ui">Verified</span>. Say which at the top of the form, because people answer differently.</li><li><span class="ui">Responses</span> → <span class="ui">Link to Sheets</span> → <span class="ui">Create a new spreadsheet</span>. Leave the <i>Form Responses 1</i> tab alone.</li><li>In the Sheet, add a tab named <b>Presenters</b>: column A each presenter’s name exactly as it appears in the Presenter dropdown, column B their FirstLine email. Row 1 is headers.</li><li><span class="ui">Extensions</span> → <span class="ui">Apps Script</span>. Replace Code.gs with this and <span class="ui">Save</span>. If you changed a question title, change it in the <code>Q</code> list at the top.<div class="code"><div class="code-bar"><span>Code.gs</span><button type="button" class="copy" data-for="code-8">Copy</button></div><pre id="code-8">// PD survey: every Friday, each presenter gets their own results from the past week.
+// The question titles below must match the Form exactly. Change them here if yours differ.
+const TEST_MODE = true;                         // flip to false only after a week of clean test sends
+const TEST_TO   = Session.getEffectiveUser().getEmail();
+const Q = {
+  session:   &#x27;Session&#x27;,
+  presenter: &#x27;Presenter&#x27;,
+  rating:    &#x27;How useful was this session?&#x27;,
+  use:       &#x27;One thing you will use&#x27;,
+  better:    &#x27;What would make it better?&#x27;,
+};
+
+function weeklyPresenterResults() {
+  const book = SpreadsheetApp.getActive();
+  const all = book.getSheetByName(&#x27;Form Responses 1&#x27;).getDataRange().getValues();
+  const col = {};
+  Object.keys(Q).forEach(k =&gt; { col[k] = all[0].indexOf(Q[k]); });
+
+  // Presenters tab: column A the name exactly as in the Form&#x27;s dropdown, column B their email.
+  const emails = {};
+  book.getSheetByName(&#x27;Presenters&#x27;).getDataRange().getValues().slice(1)
+    .forEach(r =&gt; { if (r[0]) emails[r[0]] = r[1]; });
+
+  const since = new Date(Date.now() - 7 * 864e5);
+  const byPresenter = {};
+  all.slice(1).filter(r =&gt; new Date(r[0]) &gt; since).forEach(r =&gt; {
+    const p = r[col.presenter];
+    (byPresenter[p] = byPresenter[p] || []).push(r);
+  });
+
+  Object.keys(byPresenter).forEach(p =&gt; {
+    const rows = byPresenter[p];
+    const to = TEST_MODE ? TEST_TO : emails[p];
+    if (!to) { console.log(&#x27;no email on the Presenters tab for&#x27;, p); return; }
+    const avg = rows.reduce((s, r) =&gt; s + Number(r[col.rating] || 0), 0) / rows.length;
+    const sessions = [...new Set(rows.map(r =&gt; r[col.session]))].join(&#x27;, &#x27;);
+    const list = c =&gt; rows.map(r =&gt; r[c]).filter(t =&gt; t !== &#x27;&#x27;).map(t =&gt; &#x27;&lt;li&gt;&#x27; + esc(t) + &#x27;&lt;/li&gt;&#x27;).join(&#x27;&#x27;) || &#x27;&lt;li&gt;None&lt;/li&gt;&#x27;;
+    MailApp.sendEmail({
+      to,
+      subject: (TEST_MODE ? &#x27;[TEST for &#x27; + p + &#x27;] &#x27; : &#x27;&#x27;) +
+               &#x27;Your PD feedback this week: &#x27; + avg.toFixed(1) + &#x27; / 5 from &#x27; + rows.length + (rows.length === 1 ? &#x27; person&#x27; : &#x27; people&#x27;),
+      htmlBody: &#x27;&lt;p&gt;Sessions: &#x27; + esc(sessions) + &#x27;&lt;/p&gt;&#x27; +
+                &#x27;&lt;p&gt;&lt;b&gt;One thing people will use&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&#x27; + list(col.use) + &#x27;&lt;/ul&gt;&#x27; +
+                &#x27;&lt;p&gt;&lt;b&gt;What would make it better&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&#x27; + list(col.better) + &#x27;&lt;/ul&gt;&#x27;,
+    });
+    console.log(&#x27;sent&#x27;, p, rows.length);                 // shows in Executions
+  });
+}
+
+function esc(t) {
+  return String(t).replace(/&amp;/g, &#x27;&amp;amp;&#x27;).replace(/&lt;/g, &#x27;&amp;lt;&#x27;).replace(/&gt;/g, &#x27;&amp;gt;&#x27;);
+}</pre></div></li><li>Pick <i>weeklyPresenterResults</i> from the function list and click <span class="ui">Run</span>. Approve the permissions with your FirstLine account. In test mode, every presenter’s email comes to you, marked <i>[TEST for Name]</i>, so you can read exactly what each would get.</li><li>Triggers (clock icon, left rail) → <span class="ui">Add Trigger</span>: function <i>weeklyPresenterResults</i>, <span class="ui">Time-driven</span> → <span class="ui">Week timer</span> → <span class="ui">Every Friday</span> → <span class="ui">3pm to 4pm</span>. <span class="ui">Save</span>.</li><li>Each Friday, open <span class="ui">Executions</span> (left rail). Every run is a row with its status and log lines, including any presenter missing from the Presenters tab.</li><li>After a week of clean test emails, set <code>TEST_MODE = false</code> and save. Triggers pick up saved code at once; there is nothing to redeploy.</li><li>Off switch: <span class="ui">Triggers</span> → the trigger’s menu → <span class="ui">Delete trigger</span>. A trigger runs under the account that created it and stops without telling anyone when that person leaves. Hand it over before you go.</li><li>Presenters never get the Sheet itself. A Sheet has no per-person view, so the email is how each one sees only their own results.</li><li>To see which sessions land across the whole year, or compare schools, put a chart on it with <a href="#google-looker">Looker Studio</a>. Comparing year over year is the point where it belongs on the <a href="#backend">dedicated back end</a>.</li></ol></article>
+      <p class="note"><b>A Sheet has no per-person view.</b> Anyone who can open it sees every row and every tab; protected ranges stop editing, not viewing. If a principal should see only their school, make one Sheet per school, or use <span class="ui">Execute as: User accessing the web app</span> with each school’s Sheet shared to that school.</p>
+      <h2 id="google-outgrown">When you’ve outgrown Google</h2>
+      <p>Any one of these means it’s time for the <a href="#backend">dedicated back end</a>:</p>
+      <ul class="rules">
+        <li><p><b>Different people need to see different rows of the same data,</b> and one Sheet per group has stopped being manageable.</p></li>
+        <li><p><b>You want trends over time or comparisons across schools,</b> and the tabs keep changing shape as people add columns.</p></li>
+        <li><p><b>It has to refresh FirstLine’s data by itself.</b> A Sheet can hold data a person pulls through the BQ Project, but it can’t fetch it from FirstLine’s data warehouse on a schedule.</p></li>
+        <li><p><b>Each entry gets reviewed or signed off,</b> and you need to know who changed what and when.</p></li>
+        <li><p><b>The script keeps hitting Google’s limits</b> on run time or emails per day.</p></li>
+      </ul></div></details><details class="fold" id="github"><summary>GitHub Pages<small>github.com</small></summary><div class="inner"><p class="lead">A public web page kept as code, so every change is recorded and whoever takes it over has the history. Public means public: nothing about a student or a staff member.</p><div class="pagebox"><div><div class="col-h">What you need</div><ul class="rules"><li><p>A GitHub account: <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> with your FirstLine email. Turn on two-factor authentication under <span class="ui">Settings</span> → <span class="ui">Password and authentication</span>.</p></li><li><p>Ask to join FirstLine’s organization (<i>firstline-schools</i>) with the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">FirstLine GitHub requests</a> form: choose <i>Join the firstline-schools GitHub organization</i> and give your GitHub username. The organization’s owners get your request and send an invitation to your FirstLine email; accept it on github.com. Code kept there stays with FirstLine when you change roles.</p></li></ul></div><div><div class="col-h">Recipes</div><ol class="toc"><li><a href="#github-page">Publish a page with GitHub Pages</a></li></ol></div></div><article class="recipe" id="github-page"><h2>Publish a page with GitHub Pages</h2><p class="aud">Public. A real HTML page.</p><p class="ex"><b>Example:</b> The homework page again, as one HTML file Claude made for you (index.html).</p><ol class="how"><li>At <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a>: Owner <i>firstline-schools</i> if you have been added, otherwise your own account. Name it, e.g. <i>grade5-homework</i>. Visibility <span class="ui">Public</span>. <span class="ui">Create repository</span>.</li><li><span class="ui">Add file</span> → <span class="ui">Upload files</span>. Drop in index.html. <span class="ui">Commit changes</span>.</li><li><span class="ui">Settings</span> → <span class="ui">Pages</span>. Source: <span class="ui">Deploy from a branch</span>. Branch: <span class="ui">main</span>, folder <span class="ui">/ (root)</span>. <span class="ui">Save</span>.</li><li>Wait about a minute and reload Settings → Pages. The address appears: https://firstline-schools.github.io/grade5-homework/.</li><li>Small edits right in the browser: open the file, click the pencil icon, change it, <span class="ui">Commit changes</span>. About a minute later the page shows it. For bigger changes, upload a new index.html, or use claude.ai/code (see the <a href="#backend">back end</a> page for how).</li></ol></article>
+      <h2>Keeping code in GitHub, the FirstLine way</h2>
+      <ul class="rules">
+        <li><p><b>In the firstline-schools organization,</b> not a personal account, so it survives you changing roles.</p></li>
+        <li><p><b>Private unless the content is meant to be public.</b> A private repository is still readable by every member of the organization, and its history is permanent.</p></li>
+        <li><p><b>Never in a repository:</b> passwords, keys or tokens, and no student or staff names, IDs or records, including "test data" typed from memory. Three of twelve invented student names in one prototype turned out to be real students.</p></li>
+        <li><p><b>A CLAUDE.md at the top:</b> what the tool is and isn’t, how it goes live, who can see what. Claude reads it at the start of every session.</p></li>
+      </ul></div></details><details class="fold" id="backend"><summary>Dedicated back end<small>the FirstLine starter kit</small></summary><div class="inner"><p class="lead">A real web app behind FirstLine sign-in, with its own database, access by job title, and FirstLine’s data behind it. You build it in claude.ai/code, in a browser, with no terminal. The Health Office tool for school nurses was built exactly this way in four days.</p><div class="pagebox"><div><div class="col-h">What you need</div><ul class="rules"><li><p>A GitHub account in the <i>firstline-schools</i> organization. Make one at <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> with your FirstLine email, then ask to join with the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">FirstLine GitHub requests</a> form.</p></li><li><p>Your FirstLine Claude account, used at <a href="https://claude.ai/code" target="_blank" rel="noopener">claude.ai/code</a>. An ordinary Claude chat can read a repository but cannot change one.</p></li></ul></div><div><div class="col-h">Recipes</div><ol class="toc"><li><a href="#backend-start">Start a tool</a></li><li><a href="#backend-loop">Make one change</a></li><li><a href="#backend-stuck">When you get stuck</a></li><li><a href="#backend-move">Move an Apps Script tool to code</a></li><li><a href="#backend-students">A tool students use</a></li></ol></div></div><article class="recipe" id="backend-start"><h2>Start a tool</h2><p class="aud">Once per tool.</p><p class="ex"><b>Example:</b> The Health Office tool: staff file a student injury report on a phone, the school nurse reviews it, and leadership sees counts by day, week and month. Each person sees only their own school.</p><ol class="how"><li>On <a href="https://github.com/firstline-schools/fls-starter-kit" target="_blank" rel="noopener">github.com/firstline-schools/fls-starter-kit</a> click <span class="ui">Use this template</span> → <span class="ui">Create a new repository</span>. Owner <i>firstline-schools</i>, a lowercase name with hyphens, Private.</li><li>Ask for it to be set up in Google Cloud with the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">FirstLine GitHub requests</a> form: choose <i>Set up a back-end tool</i>, and give the repository name, who uses it, whether families or students must reach it without a FirstLine account, and which FirstLine data it reads. This is the one step you cannot do yourself. The reply gives you the tool’s address.</li><li>Write <i>SPEC.md</i> before any code: what it does, who uses it and what each role may see, the records it keeps, a Must Never list, and checks a reviewer can watch happen. Ask the person who does the work how they do it today before deciding who the tool is for. <a href="https://github.com/firstline-schools/health-office/blob/main/SPEC.md" target="_blank" rel="noopener">The Health Office spec</a> is a finished example.</li></ol></article><article class="recipe" id="backend-loop"><h2>Make one change</h2><p class="aud">The same six moves, every time.</p><ol class="how"><li>At claude.ai/code, under the box where you type, choose your repository. Leave the branch on <span class="ui">main</span>.</li><li>Type what you want and press Enter. One change per request.</li><li>Claude reads the repository (starting with CLAUDE.md), writes the code and its tests, and commits to a new branch. You watch it work.</li><li>When it finishes you see a line like <span class="ui">+42 -18</span>. Click it and read what changed, file by file. You are the reviewer; if something is wrong, say so in the same conversation.</li><li>Click <span class="ui">Create PR</span> and open it as a full pull request.</li><li>On GitHub, wait for the green tick, then <span class="ui">Merge pull request</span>. About two minutes later the change is live. Open the tool and use it.</li><li><b>Keep the branch current.</b> Claude’s branch is copied from main when the conversation starts and doesn’t move. If anything has merged since, start your next request with: <i>"Merge the latest main into this branch before you start, and tell me anything that conflicts."</i></li></ol></article><article class="recipe" id="backend-stuck"><h2>When you get stuck</h2><p class="aud">Everything here you do yourself, in the browser.</p><ol class="how"><li><b>The tool says its tables are missing:</b> open the tool and press <span class="ui">Create tables</span>.</li><li><b>You need a real job title or school name:</b> press the lookup buttons on the tool’s setup page and copy the result into your chat.</li><li><b>The tool says it needs a permission it can’t give itself:</b> press <span class="ui">Copy the request</span> and send it to the person the tool names.</li><li><b>The check is red on your pull request:</b> click <span class="ui">Details</span>, copy the red lines into your chat and ask for a fix. A red test means the change broke something the tool promised: fix the code, not the test.</li><li><b>The deploy is red after a merge:</b> <span class="ui">Actions</span> tab → the red run → the failed step → copy the red lines into your chat. The previous version keeps running while you fix it.</li><li><b>Claude tells you to run a command:</b> tell it you have no terminal and ask for another way.</li><li><b>Four things need an administrator,</b> and the tool names them when it hits one: a password or API key; FirstLine data the tool wasn’t set up to read; making it reachable without a FirstLine sign-in; changing a Cloud Run setting.</li></ol></article><article class="recipe" id="backend-move"><h2>Move an Apps Script tool to code</h2><p class="aud">For a tool that works and has outgrown its Sheet.</p><p class="ex"><b>Example:</b> The school mastery tracker: data pulled through the BQ Project into a Sheet, published with Apps Script. As code, it reads FirstLine’s data directly with nobody pulling it, each school sees only its own students, and every change is recorded.</p><ol class="how"><li><b>Keep the Apps Script version running.</b> People keep using it until the new one matches it.</li><li>Start a tool from the starter kit (<a href="#backend-start">Start a tool</a>). In the setup request, list everything the Sheet is built from: which FirstLine data (rosters, assessments, attendance) and anything outside the warehouse. The FirstLine data becomes a direct read; the reply says how the rest gets in.</li><li>Put the Apps Script code in the repository so Claude can read the rules instead of guessing them. In the script editor, open each file (Code.gs, Index.html and the rest), copy it, and on GitHub use <span class="ui">Add file</span> → <span class="ui">Create new file</span> to save it under <i>apps-script/</i> with the same name.</li><li>Write <i>SPEC.md</i> from what the page already does: a screenshot of every tab, each filter, each status and the exact rule that sets it (for example: 75–100% strong, 65–74% approaching, 50–64% partial, 0–49% significant gap), and who may see it (staff at that school).</li><li>First request in claude.ai/code: <i>"Read SPEC.md and everything in apps-script/. Don’t write code yet. Tell me how you would build this, which data you would read, and every rule you can’t find in either."</i> Answer its questions in SPEC.md.</li><li>Build one tab at a time, starting with the Overview, one change per pull request.</li><li><b>Check the numbers against the old page.</b> Pick ten students and compare them side by side. Every difference is either a bug or a rule the spec missed; fix the spec or the code, then check again.</li><li>When they match, send people the new address. Then retire the old page: in the script editor, <span class="ui">Deploy</span> → <span class="ui">Manage deployments</span> → select it → <span class="ui">Archive</span>.</li></ol></article><article class="recipe" id="backend-students"><h2>A tool students use</h2><p class="aud">Approval first. This is the only route.</p><p class="ex"><b>Example:</b> A multiplication game that remembers which facts each student has mastered, picks up where they left off, and shows the teacher who needs help. Not a Claude page (students have no Claude accounts), not a Sheet in your Drive, not an outside service.</p><ol class="how"><li>Write five decisions in a Doc: what it is for; what it remembers; what it never collects (name, photo, free text about a child); how it knows which student it is (their FirstLine school account, or an anonymous code the teacher holds); who sees what; when data is deleted.</li><li>Take the Doc to your supervisor and the academic lead for the subject. The answer is yes, no, or a smaller yes.</li><li>Start the tool as above, saying in the setup request that students will use it.</li><li>Build the smallest playable version first, one change at a time.</li><li>Pilot with one class, teacher in the room. Check it against the spec, and ask a second AI to attack it against the Must Never list. Save what it finds.</li><li>Sign-off before any other class uses it (see <a href="#check">Before people use it</a>).</li></ol></article>
+      <h2>What you get</h2>
+      <p>A small web app on Google Cloud Run, in FirstLine’s project for builder tools. FirstLine sign-in sits in front of it, so nobody without a FirstLine account reaches it. It looks people up by job title and school in the staff roster, reads only the FirstLine data it was set up for, and keeps its own records (see <a href="#data">Where data lives</a>). Every merge deploys it in about two minutes and checks that it answers. Every morning a health check confirms it’s up.</p></div></details><h2 class="ref-h">Good to know</h2><details class="fold" id="path"><summary>Not sure where yours goes?<small>six quick questions</small></summary><div class="inner"><p class="lead">Click an answer to each question about the tool you have in mind; the box on the right updates as you go and ends with the exact steps to follow. Or start from an example.</p>
+
+      <div class="examples" id="examples" aria-label="Examples"></div>
+
+      <div class="chooser">
+        <form id="quiz" autocomplete="off"></form>
+        <aside class="result" aria-live="polite">
+          <div class="head">
+            <div class="eyebrow">Your path</div>
+            <div class="path" id="r-path"></div>
+          </div>
+          <div class="body" id="r-body"></div>
+        </aside>
+      </div>
+    </div></details><details class="fold" id="check"><summary>Before people use it<small>the checklist and sign-off</small></summary><div class="inner">
+      <p class="lead">A short check before anyone other than you relies on the tool. Go down the list for what your tool does; skip what doesn’t apply.</p>
+
+      <div class="sts">
+        <div class="eyebrow">Safe to Ship, from AI for Equity</div>
+        <p>FirstLine’s sign-off follows AI for Equity’s <b>Safe to Ship</b> model, in two halves. The builder works the <a href="https://claude.ai/code/artifact/199b8405-1cd5-4f9a-9a36-526a203a421c" target="_blank" rel="noopener">Builder’s Guide</a> and keeps the evidence while building: the spec, the Must Never list, each check with what you saw, and a second AI’s attempt to break the access rules. The supervisor reviews it before launch and decides <b>Ship</b>, <b>Ship with conditions</b> or <b>Not yet</b>. Any No or Unsure rules out Ship.</p>
+        <ul class="sts-links">
+          <li><a href="https://claude.ai/code/artifact/199b8405-1cd5-4f9a-9a36-526a203a421c" target="_blank" rel="noopener">Builder’s Guide</a> <span class="muted small">what to do, and what to keep, at each step of the build</span></li>
+          <li><a href="https://docs.google.com/document/d/1CVUpC2yfyEuSnGlAsDJojwgwLSl7n9L99amO8aiGP1s/edit" target="_blank" rel="noopener">Supervisor’s Guide</a> <span class="muted small">the pre-launch review, also usable as a Claude skill</span></li>
+          <li><a href="https://ai-video-library.vercel.app/" target="_blank" rel="noopener">AI for Equity resources</a> <span class="muted small">their video library</span></li>
+          <li><a href="https://github.com/AI-for-Equity/AI-For-Equity-Skills" target="_blank" rel="noopener">AI for Equity skills</a> <span class="muted small">on GitHub</span></li>
+        </ul>
+        <p class="small muted">Use it for anything that runs on its own, keeps records, or that students use. A page or a shared Sheet needs only the checks below.</p>
+      </div>
+
+      <div class="checks">
+        <div class="check"><h3>Every tool</h3><ul>
+          <li>Every date, time and policy on it has a source you can point to.</li>
+          <li>A second person can edit it.</li>
+          <li>The owner’s name and what it is for are written on it: the Sheet’s first tab, the site’s footer, the repository’s README.</li>
+          <li>Public pages: no student names, photos or individual information.</li>
+        </ul><p class="who"><b>Sign-off:</b> send the link to your supervisor.</p></div>
+
+        <div class="check"><h3>Only some people may see it</h3><ul>
+          <li>The sharing setting is written down on the tool.</li>
+          <li>An account that should be refused was refused, and someone other than you tested it.</li>
+          <li>Apps Script: <i>Execute as</i> and <i>Who has access</i> are written down, with the reason.</li>
+        </ul><p class="who"><b>Sign-off:</b> your supervisor sees the link and the sharing setting.</p></div>
+
+        <div class="check"><h3>It shows data that changes</h3><ul>
+          <li>It reads from the real source: no downloaded file, no pasted copy.</li>
+          <li>Every number’s definition matches the data team’s, and is written on the page.</li>
+          <li>Someone with less access opened it and saw only their slice, or everyone may see all of it.</li>
+          <li>How often it refreshes is written down.</li>
+        </ul><p class="who"><b>Sign-off:</b> your supervisor, plus the data team when the numbers are about students.</p></div>
+
+        <div class="check"><h3>It runs on its own, or keeps records</h3><ul>
+          <li>The spec and the Must Never list existed before the build.</li>
+          <li>Every run shows up in a log you have looked at.</li>
+          <li>There is a one-step off switch, and you know where it is.</li>
+          <li>Everything it sends went to a test address first, for a week.</li>
+          <li>Every entry records who and when, and a wrong entry can be corrected.</li>
+        </ul><p class="who"><b>Sign-off:</b> your supervisor works the <a href="https://docs.google.com/document/d/1CVUpC2yfyEuSnGlAsDJojwgwLSl7n9L99amO8aiGP1s/edit" target="_blank" rel="noopener">Safe to Ship Supervisor’s Guide</a>: Ship, Ship with conditions, or Not yet.</p></div>
+
+        <div class="check"><h3>Students use it</h3><ul>
+          <li>Approved before the first student uses it.</li>
+          <li>Students are identified by school account or an anonymous code. No names stored.</li>
+          <li>Only the minimum data, in a FirstLine system.</li>
+          <li>You tried to see another teacher’s students and were refused.</li>
+          <li>When data is deleted is written down, and it happens.</li>
+        </ul><p class="who"><b>Sign-off:</b> your supervisor and the academic lead, using the <a href="https://docs.google.com/document/d/1CVUpC2yfyEuSnGlAsDJojwgwLSl7n9L99amO8aiGP1s/edit" target="_blank" rel="noopener">Safe to Ship Supervisor’s Guide</a>. No student use on a Not yet.</p></div>
+      </div></div></details><details class="fold" id="data"><summary>Where data lives<small>Sheets, BigQuery, Firestore, Cloud SQL</small></summary><div class="inner">
+      <p class="lead">Every tool keeps its information somewhere. Knowing which one, and what it is good and bad at, is most of choosing a path.</p>
+
+      <div class="dbs">
+        <div class="db">
+          <div class="db-h"><h3>Google Sheets</h3><span class="st ok">In use everywhere</span></div>
+          <p>The database most people at FirstLine already use. Forms write into it; Apps Script and Looker Studio read from it.</p>
+          <dl><dt>Good for</dt><dd>A team-sized record: responses, a tracker, a schedule.</dd>
+              <dt>Watch for</dt><dd>Anyone who can open it sees every row. Columns drift as people edit. No record of who changed a cell beyond version history.</dd></dl>
+        </div>
+        <div class="db">
+          <div class="db-h"><h3>BigQuery: FirstLine’s data warehouse</h3><span class="st ok">In use</span></div>
+          <p>Where FirstLine’s own data lives: rosters, attendance, grades, assessments, staff. Source systems load it; nobody else writes to it. Its Google Cloud project is <code>fls-data-warehouse</code>.</p>
+          <dl><dt>How you reach it</dt><dd>Through the <a href="#claude-bq">BQ Project in Claude</a> (only your own students, through views in <code>fls-teacher-data</code>), or from a back-end tool that was set up to read specific parts of it. Never by copying it somewhere else.</dd>
+              <dt>Good for</dt><dd>Analysis: trends over time, comparisons across schools and years.</dd></dl>
+        </div>
+        <div class="db">
+          <div class="db-h"><h3>BigQuery: a tool’s own dataset</h3><span class="st ok">In use: the starter kit today</span></div>
+          <p>Each back-end tool gets its own dataset in the <code>firstline-tools</code> project and writes only there. The Health Office tool keeps its reports in <code>firstline-tools.health_office</code>.</p>
+          <dl><dt>Good for</dt><dd>Records you will analyze later; a full history of every change.</dd>
+              <dt>Watch for</dt><dd>It is built for analysis, not for records people edit all day. Edits are careful SQL, a column named after a reserved word (<code>at</code>) breaks every save, and rows saved with the fast method can’t be edited for about half an hour.</dd></dl>
+        </div>
+        <div class="db">
+          <div class="db-h"><h3>Firestore</h3><span class="st test">Being tested</span></div>
+          <p>Google’s database for live app records: a form submitted, then corrected five minutes later.</p>
+          <dl><dt>Good for</dt><dd>Fast reads and edits of individual records. Costs close to nothing when nobody is using the tool.</dd>
+              <dt>Watch for</dt><dd>Not built for reports across many records, so records are copied to BigQuery for trends. Not yet part of the starter kit.</dd></dl>
+        </div>
+        <div class="db">
+          <div class="db-h"><h3>Cloud SQL (Postgres)</h3><span class="st test">Being considered</span></div>
+          <p>A traditional database of related tables, for apps that need fast answers across many of them.</p>
+          <dl><dt>Good for</dt><dd>Performance apps: dashboards that slice large data quickly.</dd>
+              <dt>Watch for</dt><dd>It runs all the time, so it has a monthly cost even when nobody is using it. Not yet part of the starter kit.</dd></dl>
+        </div>
+        <div class="db">
+          <div class="db-h"><h3>A Claude page’s storage</h3><span class="st ok">Available</span></div>
+          <p>A page published from Claude can remember what each viewer enters in their own browser, or, with a capability FirstLine’s administrator enables, keep entries shared across everyone who opens it.</p>
+          <dl><dt>Good for</dt><dd>Checklists, sign-ups, small shared lists for staff.</dd>
+              <dt>Watch for</dt><dd>Not for student information.</dd></dl>
+        </div>
+      </div>
+
+      <h2>The rule of thumb</h2>
+      <ul class="rules">
+        <li><p><b>FirstLine’s data stays in the warehouse.</b> Read it where it lives; don’t keep copies that go stale.</p></li>
+        <li><p><b>Live records go where they can be edited:</b> a Sheet for a team, a tool’s own database for anything bigger.</p></li>
+        <li><p><b>Trends go in BigQuery,</b> kept in one shape year after year, so this year can be compared with last and one school with another.</p></li>
+      </ul></div></details><details class="fold" id="lessons"><summary>Lessons we learned<small>from real FirstLine tools</small></summary><div class="inner"><p class="lead">Each happened to a real FirstLine tool.</p><ul class="rules"><li><p><b>Executing as you is the most common leak.</b> An Apps Script web app set to Execute as Me shows every viewer whatever the script can read. Fine for a duty schedule. Not fine for a Sheet with student rows: execute as the user, or narrow Who has access to match.</p></li><li><p><b>Triggers die with their owner.</b> An Apps Script trigger runs under the account that created it. When that person leaves, the Monday email stops and nobody is told. Create triggers from a team account, or hand them over before you go.</p></li><li><p><b>A green deploy is not a working app.</b> Twice a deploy reported success while every page returned an error. The deploy now checks the app answers, and you still open the page and use it.</p></li><li><p><b>Tests live with the code.</b> The first tool built from the starter kit had 68 tests that disappeared with the session that wrote them. Tests are committed with every change, and a red test blocks the merge.</p></li><li><p><b>One change at a time.</b> Five changes in one afternoon on a live tool left a team unable to work. Ship one, check it, then the next.</p></li><li><p><b>Access by job title, never a list of emails.</b> A list of emails is a lockout waiting for the next role change. Job titles from the staff roster move with the job, and must match it exactly: "Manager, HR" and "Manager HR" are different.</p></li><li><p><b>Every route that returns a person checks who is asking.</b> Nine routes across five tools accepted ?email= and returned that person’s record to anyone. Check the caller, every time.</p></li><li><p><b>Made-up data isn’t made up until you check.</b> Three of twelve invented student names in one prototype were real students. Check invented names against the roster before sharing anything.</p></li><li><p><b>A word can break a database.</b> A history column named at, a reserved word in BigQuery, made every save fail. The starter kit now tests for it.</p></li><li><p><b>Ask the person who does the work.</b> The Health Office tool was first built as though the nurse fills in the injury form. Her own words: the staff member on duty does, and she reviews it. Ask before you decide who the tool is for.</p></li><li><p><b>Grade codes are not grades.</b> In FirstLine’s student data, grade -2 is the Discovery Program (fully self-contained special education), not pre-K 3. -1 is PK4 and 0 is K. Label them that way wherever a grade appears.</p></li></ul></div></details>
+  </main>
+</div>
+
+<script>
+(function () {
+  var Q = [{"id": "who", "q": "Who will use it?", "o": [["me", "Just me"], ["staff", "People at FirstLine, and everyone sees the same thing"], ["team", "A chosen group (one school, one team), and they all see the same thing"], ["roles", "People at FirstLine, and what you see depends on your role or school"], ["public", "Families or students, without a FirstLine sign-in"]]}, {"id": "data", "q": "Where does its information come from?", "o": [["typed", "I write it, and update it by hand when it changes"], ["sheet", "A Google Sheet or Form that keeps filling up"], ["claude", "FirstLine data (rosters, grades, assessments) that I pull through the BQ Project in Claude"], ["warehouse", "FirstLine data that has to refresh by itself, with nobody pulling it"]]}, {"id": "store", "q": "Does it keep what people enter?", "o": [["no", "No, people only read it"], ["responses", "Yes, responses pile up and someone reads them"], ["records", "Yes, and someone reviews, corrects or signs off on each one later"]]}, {"id": "auto", "q": "Does it need to do anything on its own?", "o": [["no", "No"], ["yes", "Yes: send an email, or refresh on a schedule"]]}, {"id": "compare", "q": "Will you want to compare it over time, or across schools?", "o": [["no", "No, it’s for what is happening now"], ["yes", "Yes: this year against last, or one school against another"]]}, {"id": "students", "q": "Does it involve information about individual students?", "o": [["no", "No"], ["yes", "Yes: names, scores, attendance, anything about a particular child"]]}], EX = [{"k": "home", "label": "Homework page for families", "a": {"who": "public", "data": "typed", "store": "no", "auto": "no", "compare": "no", "students": "no"}}, {"k": "check", "label": "Team checklist", "a": {"who": "team", "data": "typed", "store": "no", "auto": "no", "compare": "no", "students": "no"}}, {"k": "req", "label": "PD survey with results to presenters", "a": {"who": "staff", "data": "sheet", "store": "responses", "auto": "yes", "compare": "no", "students": "no"}}, {"k": "lha", "label": "A school’s student mastery tracker", "real": true, "a": {"who": "team", "data": "claude", "store": "no", "auto": "no", "compare": "no", "students": "yes"}}, {"k": "reftr", "label": "Referral trends across schools", "a": {"who": "roles", "data": "sheet", "store": "responses", "auto": "no", "compare": "yes", "students": "yes"}}, {"k": "game", "label": "Math game that keeps scores", "a": {"who": "public", "data": "typed", "store": "responses", "auto": "no", "compare": "no", "students": "yes"}}, {"k": "nurse", "label": "Nurse’s injury reports", "real": true, "a": {"who": "roles", "data": "warehouse", "store": "records", "auto": "no", "compare": "yes", "students": "yes"}}], T = {"claude-page": "Publish a page from Claude", "claude-checklist": "An interactive checklist that remembers each person’s ticks", "claude-shared": "A small tool with shared entries", "claude-bq": "Ask questions of FirstLine’s data: the BQ Project", "claude-sheet": "Pull FirstLine data into a Sheet, then publish it", "google-site": "A public page: Google Sites", "google-restricted": "A page only some people can open", "google-webapp": "A Sheet as a live web page", "google-looker": "Charts from a Sheet: Looker Studio", "google-auto": "A PD survey that sends each presenter their own results", "github-page": "Publish a page with GitHub Pages", "backend-start": "Start a tool", "backend-loop": "Make one change", "backend-stuck": "When you get stuck", "backend-move": "Move an Apps Script tool to code", "backend-students": "A tool students use"};
+
+  // ---------- a link opens the folded section that holds its target ----------
+  function show() {
+    var h = location.hash.slice(1);
+    var t = h && document.getElementById(h);
+    if (!t) return;
+    for (var e = t; e; e = e.parentElement) if (e.tagName === 'DETAILS') e.open = true;
+    t.scrollIntoView();
+  }
+  window.addEventListener('hashchange', show);
+
+  // ---------- copy buttons ----------
+  document.querySelectorAll('button.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pre = document.getElementById(btn.getAttribute('data-for'));
+      function done(t) { btn.textContent = t; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); }
+      function select() { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done('Selected: press Ctrl+C'); }
+      try { navigator.clipboard.writeText(pre.textContent).then(function () { done('Copied'); }, select); } catch (e) { select(); }
+    });
+  });
+
+  // ---------- chooser ----------
+  var form = document.getElementById('quiz');
+  Q.forEach(function (q) {
+    var fs = document.createElement('fieldset');
+    var lg = document.createElement('legend'); lg.textContent = q.q; fs.appendChild(lg);
+    var box = document.createElement('div'); box.className = 'opts';
+    q.o.forEach(function (opt) {
+      var id = 'q-' + q.id + '-' + opt[0];
+      var lab = document.createElement('label'); lab.setAttribute('for', id);
+      var inp = document.createElement('input'); inp.type = 'radio'; inp.name = q.id; inp.value = opt[0]; inp.id = id;
+      lab.appendChild(inp); lab.appendChild(document.createTextNode(opt[1])); box.appendChild(lab);
+    });
+    fs.appendChild(box); form.appendChild(fs);
+  });
+
+  var exBox = document.getElementById('examples');
+  EX.forEach(function (e) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = e.label; b.setAttribute('data-k', e.k); b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', function () { load(e.k); });
+    exBox.appendChild(b);
+  });
+
+  function answers() {
+    var a = {};
+    Q.forEach(function (q) { var c = form.querySelector('input[name="' + q.id + '"]:checked'); a[q.id] = c ? c.value : null; });
+    return a;
+  }
+  function load(k) {
+    var e = EX.filter(function (x) { return x.k === k; })[0];
+    Object.keys(e.a).forEach(function (id) { var i = document.getElementById('q-' + id + '-' + e.a[id]); if (i) i.checked = true; });
+    render(k);
+  }
+
+  function decide(a) {
+    var back = [], goog = [];
+    if (a.who === 'roles') back.push('Different people see different things. The tool has to check who is signed in against their job title and school, on every request.');
+    if (a.data === 'warehouse') back.push('FirstLine’s data has to refresh by itself. Only a back-end tool can read the data warehouse on its own.');
+    if (a.store === 'records') back.push('Someone acts on each record later. That needs a real database with a history of who changed what.');
+    if (a.compare === 'yes') back.push('You want to compare over time or across schools. That needs the data kept in one shape, year after year and school by school.');
+    if (a.who === 'public' && a.store !== 'no') back.push('People without a FirstLine sign-in are entering things. That needs a server deciding what they may send and where it goes.');
+
+    if (a.data === 'claude') goog.push('You pull FirstLine data through the BQ Project into a Sheet, and Apps Script turns the Sheet into a page.');
+    if (a.data === 'sheet') goog.push('Its information lives in a Sheet or Form, so the tool can sit right on top of it.');
+    if (a.store === 'responses') goog.push('Responses pile up for someone to read: that is what a Form feeding a Sheet does.');
+    if (a.auto === 'yes') goog.push('It acts on its own. Apps Script can send the email or run on a timer.');
+
+    var need = { Permissions: a.who === 'roles' || a.who === 'team', 'Live data': a.data !== 'typed',
+                 Automation: a.auto === 'yes', Records: a.store !== 'no', Trends: a.compare === 'yes' };
+
+    if (back.length) {
+      var steps = ['backend-start', 'backend-loop'];
+      if (a.students === 'yes' && a.who === 'public') steps.push('backend-students');
+      steps.push('backend-stuck');
+      return { path: 'Dedicated back end', why: back, need: need, gh: true, steps: steps,
+        what: 'Built from the FirstLine starter kit: a real web app behind FirstLine sign-in, with its own database and access by job title. You build it in claude.ai/code, in a browser.' };
+    }
+    if (goog.length) {
+      var gs = [];
+      if (a.data === 'claude') gs.push('claude-bq', 'claude-sheet', 'google-webapp', 'backend-move');
+      if (a.store === 'responses' || a.auto === 'yes') gs.push('google-auto');
+      if (a.data === 'sheet' && a.store === 'no' && a.auto === 'no') gs.push('google-webapp', 'google-looker');
+      if (a.data === 'sheet' && a.store === 'responses') gs.push('google-looker');
+      return { path: a.data === 'claude' ? 'Claude + Google' : 'Google: Forms, Sheets, Apps Script', why: goog, need: need, gh: false, steps: gs,
+        what: a.data === 'claude' ? 'Pull the data with the BQ Project in Claude, keep it in a Sheet, publish it with Apps Script. Decide who can see it before anyone opens it.'
+                                   : 'A Form that feeds a Sheet, with Apps Script for anything automatic. Shared with FirstLine Schools, never with anyone who has the link.' };
+    }
+    if (a.who === 'public') return { path: 'A public page', need: need, gh: false, steps: ['google-site', 'github-page'],
+      why: ['Nothing is stored, nothing changes on its own, and nobody signs in.'],
+      what: 'A Google Site published to everyone, or GitHub Pages if you want it kept as code. Nothing about a student or a staff member on it.' };
+    if (a.who === 'team' || a.who === 'staff') return { path: 'A page only FirstLine can open', need: need, gh: false, steps: ['google-restricted', 'claude-checklist'],
+      why: ['Everyone who can open it sees the same thing and nothing is stored, so the only job is the sharing setting.'],
+      what: 'A Google Site restricted to FirstLine or to your team, an Apps Script web app, or a Claude page for something quick.' };
+    return { path: 'Claude', need: need, gh: false, steps: ['claude-page', 'claude-checklist'],
+      why: ['It is for you, it stores nothing and it runs nothing on its own.'],
+      what: 'Build it in claude.ai by describing it. It stays private until you share it. If other people start relying on it, answer again.' };
+  }
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; }
+
+  function render(exampleKey) {
+    var a = answers();
+    exBox.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-k') === exampleKey ? 'true' : 'false'); });
+    var missing = Q.filter(function (q) { return !a[q.id]; }).length;
+    var pathEl = document.getElementById('r-path'), body = document.getElementById('r-body');
+    body.textContent = '';
+    if (missing) {
+      pathEl.textContent = missing + ' question' + (missing > 1 ? 's' : '') + ' to go';
+      body.appendChild(el('p', 'muted', 'Answer every question, or pick an example above.'));
+      return;
+    }
+    var r = decide(a);
+    pathEl.textContent = r.path;
+    body.appendChild(el('p', '', r.what));
+    if (a.students === 'yes' && !r.gh) {
+      body.appendChild(el('p', 'small', a.who === 'public'
+        ? 'Student information: never on a public page. Keep anything about a particular child behind a FirstLine sign-in.'
+        : 'Student information: only the staff who work with those students may open it. Set that before anyone opens it.'));
+    }
+    var ex = EX.filter(function (x) { return x.k === exampleKey; })[0];
+    if (ex && ex.real) body.appendChild(el('div', 'real', 'This one is real: someone at FirstLine built it this way.'));
+
+    var s = el('div'); s.appendChild(el('h4', '', 'Follow these steps'));
+    var ol = el('ol', 'links');
+    r.steps.forEach(function (id) {
+      var li = el('li'); var link = el('a', '', T[id]); link.href = '#' + id; li.appendChild(link); ol.appendChild(li);
+    });
+    s.appendChild(ol); body.appendChild(s);
+
+    var w = el('div'); w.appendChild(el('h4', '', 'Why'));
+    var ul = el('ul'); r.why.forEach(function (t) { ul.appendChild(el('li', '', t)); }); w.appendChild(ul); body.appendChild(w);
+
+    var n = el('div'); n.appendChild(el('h4', '', 'What it needs'));
+    var nb = el('div', 'needs');
+    Object.keys(r.need).forEach(function (k) { nb.appendChild(el('span', r.need[k] ? 'on' : '', k)); });
+    n.appendChild(nb); body.appendChild(n);
+
+    var nx = el('div', 'next');
+    nx.appendChild(document.createTextNode(r.gh ? 'Needs a GitHub account in FirstLine’s organization. ' : 'No GitHub needed. '));
+    var ck = el('a', '', 'Before people use it'); ck.href = '#check';
+    nx.appendChild(document.createTextNode('When it works, go through ')); nx.appendChild(ck); nx.appendChild(document.createTextNode('.'));
+    body.appendChild(nx);
+  }
+
+  form.addEventListener('change', function () { render(null); });
+  load('req');
+  show();
+})();
+</script>
+</body>
+</html>
