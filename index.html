@@ -258,6 +258,11 @@ ol.toc { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: col
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sts { border-left-color: var(--orange); } }
 
 /* one-page site */
+.keep { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 14px 0 12px; }
+.keep > div { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 8px; padding: 12px 14px; font-size: 15px; }
+:root[data-theme="dark"] .keep > div { border-left-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .keep > div { border-left-color: var(--orange); } }
+
 .first { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin-top: 20px; }
 .first h2, .n2 h2 { margin: 6px 0 6px; font-size: 20px; }
 .first p { margin: 0 0 10px; }
@@ -320,19 +325,24 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
 
     <section class="hero" id="start">
       <h1>Build a tool for FirstLine</h1>
-      <p class="lead">Start in Claude. If your tool works with data, FirstLine’s or its own, build it on the FirstLine starter kit. If it doesn’t, build it in Google or Claude.</p>
+      <p class="lead">Many ways to build. Two places everything is kept.</p>
+      <div class="keep">
+        <div><b>Code lives in GitHub.</b> Every tool’s code, with every change recorded, in FirstLine’s organization.</div>
+        <div><b>Data lives in FirstLine’s databases.</b> BigQuery, and Firestore being tested. FirstLine’s own data, plus whatever your tool keeps.</div>
+      </div>
+      <p>Build with whichever approved AI assistant you like. Because the code and the data are kept in those two places, and not in one person’s chat or Drive, anyone can pick a tool up later, with any assistant.</p>
 
       <div class="first">
         <div class="n">1</div>
         <div>
-          <h2>Describe what you want</h2>
-          <p>Open Claude with your FirstLine account and fill in the blanks. You don’t need to know which way to build it yet; Claude will tell you.</p>
+          <h2>Describe what you want to an AI assistant</h2>
+          <p>Use an assistant FirstLine has approved, <b>signed in with your FirstLine account</b>: Claude, Gemini, ChatGPT for Teachers, or Codex. Those carry FirstLine’s privacy protections; a personal account does not. Fill in the blanks. You don’t need to know which way to build it yet; the assistant will tell you.</p>
           <p class="say">“I’m a <b>[your role]</b> at FirstLine. I want a tool that <b>[what it does]</b> for <b>[who uses it]</b>. It needs <b>[what information it uses or keeps]</b>. Which way should I build it? Walk me through it.”</p>
           <ul class="when">
             <li><i>“…a sign-up for Saturday tutoring, for families at my school. It needs each family’s choice of session.”</i></li>
             <li><i>“…a page showing each of my teachers’ student attendance and latest scores, for me and my principal. It needs FirstLine’s attendance and assessment data, and my notes on each class.”</i></li>
           </ul>
-          <div class="acts"><a class="btn" href="https://claude.ai" target="_blank" rel="noopener">Open Claude</a></div>
+          <div class="acts"><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a><a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a><a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT for Teachers</a></div>
         </div>
       </div>
 
@@ -343,9 +353,9 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
           <h3>Build with data</h3>
           <ul>
             <li><b>Read FirstLine’s data</b> straight from BigQuery: rosters, attendance, grades, assessments. Nothing downloaded, nothing pasted into a Sheet.</li>
-            <li><b>Keep your own data</b> in your tool’s own database instead of a Sheet in someone’s Drive: responses, notes, reports, sign-ups. You describe it to Claude and press <span class="ui">Create tables</span>.</li>
+            <li><b>Keep your own data</b> in your tool’s own database instead of a Sheet in someone’s Drive: responses, notes, reports, sign-ups. You describe it to your AI assistant and press <span class="ui">Create tables</span>.</li>
             <li><b>Each person sees only what their role allows</b>, behind FirstLine sign-in.</li>
-            <li><b>Built in claude.ai/code,</b> in your browser. No terminal, nothing to install.</li>
+            <li><b>Built in your browser with an AI coding assistant</b> such as claude.ai/code or Codex. No terminal, nothing to install.</li>
           </ul>
           <p>Fill in one form. We add you to GitHub, make your tool, and email you its address.</p>
           <div class="acts"><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">Request your tool</a><a href="#backend-start">How it works</a></div>
@@ -401,6 +411,8 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
     <section>
       <h2 class="ref-h">Rules for every tool</h2>
       <ul class="rules">
+        <li><p><b>Use AI with your FirstLine account.</b> Claude, Gemini, ChatGPT for Teachers or Codex, signed in as you at FirstLine. Never a personal account for anything about students or staff.</p></li>
+        <li><p><b>Keep it in the two places.</b> Code in FirstLine’s GitHub; data in FirstLine’s databases. Not on your laptop, not only in a chat.</p></li>
         <li><p><b>It looks like FirstLine.</b> Navy <code>#002F60</code>, orange <code>#E47727</code>, Open Sans on screen. The rest is in the <a href="https://drive.google.com/drive/u/0/folders/1hWkHbBs_c6eLDvDjwCOIUoykutwxz6kC" target="_blank" rel="noopener">FirstLine branding guide</a>.</p></li>
         <li><p><b>FirstLine information stays behind a FirstLine sign-in.</b> Share with “FirstLine Schools”, never “Anyone with the link”. Nothing about a student or staff member on a public page.</p></li>
         <li><p><b>Student information goes only to the people who need it.</b> A Sheet shared with the right staff is fine day to day. Trends over time or across schools belong on the back end.</p></li>
