@@ -11,7 +11,7 @@ paths this page describes.
   the starter kit). Only the last row needs GitHub; keep it last. (2) Describe it to Claude and name
   the row picked, so the assistant doesn't choose a different path. (3) Check it. Keep this short; it
   is the front door, and it must not send people to GitHub first.
-- Below: folded `<details>` sections, each with an `id` that links open it (`#google`, `#claude`,
+- Below: folded `<details>` sections, each with an `id` that links open it (`#words`, `#compare`, `#google`, `#claude`,
   `#github`, `#backend`, `#path`, `#check`, `#data`, `#lessons`, and each recipe's own id).
   Any `href="#x"` must point at an id that exists on the page.
 - `#path` is a six-question chooser; its rules are in the inline script (`decide()`), and every

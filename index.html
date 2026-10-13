@@ -277,6 +277,15 @@ ol.toc { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: col
 .rung .lvl { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--orange-ink); font-weight: 700; }
 .rung p { font-size: 15px; margin: 0 0 8px; }
 .rung ul { margin: 0 0 8px; padding-left: 18px; font-size: 15px; }
+.words { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 8px 16px; margin: 12px 0 0; font-size: 15px; }
+.words dt { font-weight: 700; }
+.words dd { margin: 0; }
+@media (max-width: 560px) { .words { grid-template-columns: 1fr; gap: 2px; } .words dd { margin-bottom: 10px; } }
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+.cmp .opt { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: 15px; }
+.cmp h3 { font-size: 17px; margin: 0 0 6px; }
+.cmp p { margin: 0 0 8px; }
+.cmp .best { color: var(--muted); margin: 0; }
 .why { margin-top: 32px; background: var(--soft); border-radius: 10px; padding: 16px 18px; }
 .why h2 { margin: 0 0 6px; font-size: 18px; }
 .steps4 { margin: 8px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; font-size: 15px; }
@@ -323,12 +332,32 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
 
     <section class="hero" id="start">
       <h1>Build a tool for FirstLine</h1>
-      <p class="lead">Start with the simplest thing that works. Most tools never need more than Claude or Google.</p>
+      <p class="lead">Start with the simplest thing that works. Most tools never need more than Claude or Google. (A <b>tool</b> is anything you make that other people use: a page, a form, a checklist or an app.)</p>
+      <details class="fold" id="words"><summary>New to this? The words on this page<small>tool, app, page, artifact, GitHub…</small></summary><div class="inner">
+        <p class="lead">You don’t need any of these words to start. They’re here so the rest of the page makes sense.</p>
+        <dl class="words">
+          <dt>Tool, or app</dt><dd>The same thing on this page: anything you make that other people use. A page, a form, a checklist, a tracker or a full web app are all tools.</dd>
+          <dt>Page, or site</dt><dd>Something people open in a web browser by its address (a link). A site is one or more pages.</dd>
+          <dt>Static page</dt><dd>A page that says the same thing to everyone until you change it by hand. The simplest kind of tool.</dd>
+          <dt>Artifact</dt><dd>What Claude calls a page or small tool it makes for you in the chat. It shows up next to the conversation; <b>Publish</b> gives it a link you can share.</dd>
+          <dt>Publish, share link</dt><dd>Turning what you made into an address other people can open. Who can open it (anyone, only FirstLine, only your team) is a setting you choose.</dd>
+          <dt>Sign-in</dt><dd>Logging in with your FirstLine Google account. “Behind FirstLine sign-in” means only people with a FirstLine account can open it.</dd>
+          <dt>Google Site</dt><dd>Google’s page builder. You build by clicking, not by writing code.</dd>
+          <dt>Apps Script</dt><dd>Small programs attached to a Google Sheet or Form. They can send an email, run on a schedule, or show a Sheet as a page. Claude writes them; you paste them in.</dd>
+          <dt>Code</dt><dd>The written instructions that make a page or app work. The AI assistant writes it; you describe what you want.</dd>
+          <dt>FirstLine’s data</dt><dd>Rosters, attendance, grades and assessments, kept in <b>BigQuery</b>, FirstLine’s data warehouse.</dd>
+          <dt>The BQ Project</dt><dd>A project in Claude that lets you ask questions of FirstLine’s data in plain English, and only shows you the students you’re allowed to see.</dd>
+          <dt>Database</dt><dd>Where a tool keeps what people type into it, so it’s still there tomorrow. A Google Sheet is the simplest kind.</dd>
+          <dt>Server, or back end</dt><dd>A computer that runs your tool all the time: it checks who is signed in, reads FirstLine’s data and saves what people enter. Only the last row needs one.</dd>
+          <dt>GitHub</dt><dd>Where code is kept, with every change recorded. You only need it for GitHub Pages and the starter kit.</dd>
+          <dt>The starter kit</dt><dd>FirstLine’s ready-made beginning for a full web app with sign-in, FirstLine’s data and its own database. You request it with a form.</dd>
+        </dl>
+      </div></details>
       <div class="first">
         <div class="n">1</div>
         <div>
           <h2>What are you building?</h2>
-          <p>Find the first row that fits, starting from the top. Each one is a step more involved than the one before. Only the last one needs GitHub.</p>
+          <p>Find the first row that fits, starting from the top. Each one is a step more involved than the one before. Only the last one needs GitHub. Want the trade-offs side by side? Open <a href="#compare">Pros and cons</a> below the rows.</p>
         </div>
       </div>
       <ol class="ladder">
@@ -369,6 +398,35 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
           <div class="acts"><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">Request your tool</a><a href="#backend">How it works</a></div>
         </li>
       </ol>
+      <details class="fold" id="compare"><summary>Pros and cons: where a page can live<small>from a Claude artifact to the starter kit</small></summary><div class="inner">
+        <p class="lead">The same page can live in several places. Listed from least to most involved.</p>
+        <div class="cmp">
+          <div class="opt"><h3>A Claude artifact</h3>
+            <p><b>Good:</b> fastest. Describe it and it appears in minutes; ask for changes in the same chat. Can remember each person’s ticks or keep shared entries.</p>
+            <p><b>Watch out:</b> whether people outside FirstLine can open the link is set by FirstLine’s Claude administrator, not by you, so test it before sending it to families. It lives in your Claude account.</p>
+            <p class="best">Best for: a quick page, explainer or checklist. <a href="#claude-page">Recipe</a></p></div>
+          <div class="opt"><h3>ChatGPT for Teachers</h3>
+            <p><b>Good:</b> if it’s the assistant you already use, it can draft the same page and show you a preview, and it can write the code for any of the options below.</p>
+            <p><b>Watch out:</b> it’s built for drafting more than for keeping a page up. Check what a shared link shows someone else before you rely on it; for a lasting address, put the page in a Google Site or GitHub Pages.</p>
+            <p class="best">Best for: drafting, when ChatGPT is what you know.</p></div>
+          <div class="opt"><h3>A Google Site</h3>
+            <p><b>Good:</b> no code, just clicks. Families can open it on a phone. Easy to keep to FirstLine or one team. The address never changes and a colleague can edit it with you.</p>
+            <p><b>Watch out:</b> limited design. You update it by hand. It can’t collect answers or do anything on its own (add a Form for that).</p>
+            <p class="best">Best for: a page for families or all staff. <a href="#google-site">Recipe</a></p></div>
+          <div class="opt"><h3>A Google Sheet as a page (Apps Script)</h3>
+            <p><b>Good:</b> the page stays in step with a Sheet or Form. It can send emails and run on a schedule. Your own design.</p>
+            <p><b>Watch out:</b> some code (Claude writes it). One setting decides who sees what, and it’s easy to get wrong. It belongs to the account that made it.</p>
+            <p class="best">Best for: sign-ups, surveys, trackers, weekly emails. <a href="#google-webapp">Recipe</a></p></div>
+          <div class="opt"><h3>GitHub Pages</h3>
+            <p><b>Good:</b> free, fast, any design you like, and every change is recorded.</p>
+            <p><b>Watch out:</b> public only. Anyone can see the page and its code, so nothing about a student or staff member, and nothing is stored. Needs a GitHub account.</p>
+            <p class="best">Best for: a public page you want kept as code. <a href="#github-page">Recipe</a></p></div>
+          <div class="opt"><h3>The starter kit (a real web app)</h3>
+            <p><b>Good:</b> reads FirstLine’s data on its own, behind FirstLine sign-in, shows each person only what their role allows, keeps its own records, and someone else can take it over later.</p>
+            <p><b>Watch out:</b> the most to learn. A request form, GitHub, and a fuller review before people use it. Days, not minutes.</p>
+            <p class="best">Best for: the last row only. <a href="#backend">How it works</a></p></div>
+        </div>
+      </div></details>
       <p class="muted small" style="margin-top:10px">Not sure which row? <a href="#path">Answer six questions</a> and you’ll get the exact steps.</p>
       <div class="first">
         <div class="n">2</div>
