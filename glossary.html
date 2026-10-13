@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FirstLine Builders Glossary</title>
+<meta name="description" content="The technical words behind FirstLine tools, in plain language: AI assistants, GitHub, Google Cloud, data, and sign-in.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root {
+  --navy: #002f60;
+  --navy-2: #0a3d73;
+  --orange: #e47727;
+  --orange-ink: #b8561a;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #16202c;
+  --muted: #5a6572;
+  --line: #dde2e8;
+  --soft: #eef2f6;
+  --chip-on: #fdf0e6;
+  --good: #1f7a4d;
+  --focus: #e47727;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0d1520;
+    --surface: #152131;
+    --ink: #e6ebf1;
+    --muted: #9aa7b6;
+    --line: #26364a;
+    --soft: #1b2a3d;
+    --chip-on: #3a2616;
+    --orange-ink: #f39a57;
+    --good: #5fc796;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d1520;
+  --surface: #152131;
+  --ink: #e6ebf1;
+  --muted: #9aa7b6;
+  --line: #26364a;
+  --soft: #1b2a3d;
+  --chip-on: #3a2616;
+  --orange-ink: #f39a57;
+  --good: #5fc796;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 'Open Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+a { color: var(--orange-ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* header */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--navy); color: #fff;
+}
+.top-inner {
+  max-width: 1120px; margin: 0 auto; padding: 10px 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.top img { height: 34px; background: #fff; border-radius: 4px; padding: 3px 6px; }
+.top .name { font-weight: 700; font-size: 16px; line-height: 1.2; }
+.top .sub { font-size: 12px; color: #ffd7b8; }
+
+/* layout */
+.wrap {
+  max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px;
+  display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 36px;
+}
+@media (max-width: 820px) { .wrap { grid-template-columns: 1fr; gap: 16px; padding-block: 16px 48px; } }
+
+nav.side { position: sticky; top: 84px; align-self: start; }
+nav.side ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+nav.side a, nav.side span {
+  display: flex; align-items: baseline; gap: 10px; padding: 8px 10px; border-radius: 6px;
+  text-decoration: none; color: var(--ink); font-size: 14px; font-weight: 500;
+}
+nav.side a:hover { background: var(--soft); }
+nav.side a[aria-current="page"] { background: var(--soft); color: var(--navy); font-weight: 700; box-shadow: inset 3px 0 0 var(--orange); }
+:root[data-theme="dark"] nav.side a[aria-current="page"] { color: var(--ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) nav.side a[aria-current="page"] { color: var(--ink); } }
+nav.side .n { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 14px; }
+nav.side span { color: var(--muted); cursor: default; }
+nav.side .soon { margin-left: auto; font-size: 11px; color: var(--muted); }
+nav.side .group { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 4px; }
+@media (max-width: 820px) {
+  nav.side { position: static; }
+  nav.side ol { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav.side .group, nav.side span { display: none; }
+  nav.side a { border: 1px solid var(--line); background: var(--surface); }
+}
+
+main { min-width: 0; }
+section.page[hidden] { display: none; }
+h1 { font-size: clamp(28px, 4vw, 38px); line-height: 1.15; margin: 0 0 12px; color: var(--navy); font-weight: 800; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 21px; line-height: 1.3; margin: 40px 0 12px; font-weight: 700; text-wrap: balance; }
+h3 { font-size: 16px; margin: 0 0 4px; font-weight: 700; }
+:root[data-theme="dark"] h1 { color: var(--ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h1 { color: var(--ink); } }
+p { margin: 0 0 12px; max-width: 68ch; }
+.lead { font-size: 18px; color: var(--muted); max-width: 62ch; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+
+/* start: three steps */
+.steps { list-style: none; padding: 0; margin: 18px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; counter-increment: s; }
+.steps li::before { content: counter(s); display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.steps p { font-size: 14px; color: var(--muted); margin: 0; }
+@media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+
+/* where tools live */
+.places { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; }
+.place { display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding: 16px; border-top: 1px solid var(--line); }
+.place:first-child { border-top: 0; }
+.place .what { font-weight: 700; }
+.place .what small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+.place .col-h { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.place p { font-size: 14px; margin: 0; }
+.gh { display: inline-block; font-size: 12px; font-weight: 600; color: var(--orange-ink); background: var(--chip-on); border-radius: 999px; padding: 1px 8px; margin-top: 6px; }
+@media (max-width: 700px) { .place { grid-template-columns: 1fr; gap: 6px; } }
+
+/* bigger */
+.bigger { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 14px; }
+.bigger div { border-top: 3px solid var(--orange); background: var(--surface); padding: 12px 14px 14px; border-radius: 0 0 8px 8px; }
+.bigger b { display: block; margin-bottom: 2px; }
+.bigger span { font-size: 14px; color: var(--muted); }
+
+/* rules */
+.rules { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.rules li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; }
+.rules li::before { content: ""; width: 10px; height: 10px; margin: 8px 0 0 8px; background: var(--navy); border-radius: 2px; }
+:root[data-theme="dark"] .rules li::before { background: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .rules li::before { background: var(--orange); } }
+.rules p { margin: 0; }
+
+.cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; padding: 12px 22px; background: var(--orange); color: #fff; font-weight: 600; border-radius: 8px; text-decoration: none; }
+.cta:hover { background: #c9621c; }
+
+/* chooser */
+.examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 24px; }
+.examples button {
+  font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.examples button:hover { border-color: var(--orange); }
+.examples button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+.chooser { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 24px; align-items: start; }
+@media (max-width: 980px) { .chooser { grid-template-columns: 1fr; } }
+fieldset { border: 0; padding: 0; margin: 0 0 20px; min-width: 0; }
+legend { font-weight: 700; margin-bottom: 8px; padding: 0; }
+.opts { display: flex; flex-direction: column; gap: 6px; }
+.opts label {
+  display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--surface); cursor: pointer; font-size: 15px; line-height: 1.4;
+}
+.opts label:hover { border-color: var(--muted); }
+.opts input { margin: 3px 0 0; accent-color: var(--orange); flex: none; }
+.opts label:has(input:checked) { border-color: var(--orange); background: var(--chip-on); }
+
+.result { position: sticky; top: 84px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+@media (max-width: 980px) { .result { position: static; } }
+.result .head { background: var(--navy); color: #fff; padding: 16px 18px; }
+.result .eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #ffd7b8; }
+.result .path { font-size: 22px; font-weight: 800; line-height: 1.2; margin-top: 2px; }
+.result .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+.result .body p { margin: 0; font-size: 15px; }
+.result h4 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.result ul { margin: 0; padding-left: 18px; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.needs { display: flex; flex-wrap: wrap; gap: 6px; }
+.needs span { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.needs span.on { border-color: var(--orange); background: var(--chip-on); color: var(--orange-ink); font-weight: 600; }
+.next { font-size: 14px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); }
+.real { font-size: 13px; color: var(--good); font-weight: 600; }
+
+/* start page: make the way forward obvious */
+.go { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 18px 0 6px; }
+.go .cta { margin-top: 0; }
+.step-link { display: flex; flex-direction: column; height: 100%; color: inherit; text-decoration: none; }
+a.step-link .go-line { margin-top: auto; padding-top: 10px; font-size: 14px; font-weight: 600; color: var(--orange-ink); }
+.step-link.off .go-line { margin-top: auto; padding-top: 10px; font-size: 13px; color: var(--muted); }
+.steps li:has(a.step-link):hover { border-color: var(--orange); }
+.steps li { display: flex; flex-direction: column; }
+.steps li::before { flex: none; }
+.place .pg { display: block; margin-top: 6px; font-size: 13px; font-weight: 600; color: var(--orange-ink); text-decoration: none; }
+.place a.pg:hover { text-decoration: underline; }
+.place .pg.off { font-weight: 400; color: var(--muted); }
+
+/* path pages */
+.example-box { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 8px; padding: 14px 16px; margin: 22px 0 4px; max-width: 76ch; }
+.example-box .eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.example-box p:last-child { margin-bottom: 0; }
+h2 .sn { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 14px; margin-right: 10px; vertical-align: 2px; }
+:root[data-theme="dark"] h2 .sn { background: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h2 .sn { background: var(--orange); } }
+ol.how { padding-left: 22px; margin: 0 0 12px; display: flex; flex-direction: column; gap: 10px; max-width: 76ch; }
+ol.how ul { margin: 6px 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.ui { font-weight: 600; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: .93em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: .88em; background: var(--soft); padding: 0 4px; border-radius: 3px; overflow-wrap: anywhere; }
+.note { background: var(--soft); border-radius: 8px; padding: 12px 14px; font-size: 15px; max-width: 76ch; margin: 12px 0; }
+.code { border: 1px solid #22344a; border-radius: 8px; overflow: hidden; margin: 12px 0 16px; background: #0f1b2b; max-width: 100%; }
+.code-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #0a1420; color: #9aa7b6; font-size: 12px; }
+.code pre { margin: 0; padding: 14px; overflow-x: auto; color: #e6ebf1; font: 13px/1.55 ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+.copy { font: inherit; font-size: 12px; color: #fff; background: transparent; border: 1px solid #3a4f68; border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.copy:hover { border-color: var(--orange); }
+.next a { font-weight: 600; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .result .body { transition: opacity .15s ease; }
+}
+
+/* path pages, v5 */
+.h1-sub { display: block; font-size: 15px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 4px; }
+.pagebox { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin: 18px 0 8px; }
+.pagebox .rules { margin: 6px 0 0; }
+.pagebox .col-h { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+ol.toc { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 15px; }
+@media (max-width: 760px) { .pagebox { grid-template-columns: 1fr; } }
+.recipe { border-top: 1px solid var(--line); margin-top: 32px; padding-top: 4px; scroll-margin-top: 84px; }
+.recipe h2 { margin-top: 20px; margin-bottom: 2px; }
+.recipe .aud { color: var(--orange-ink); font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+.recipe .ex { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 8px; padding: 10px 14px; font-size: 15px; max-width: 76ch; }
+.recipe ol.how li .code { margin-top: 8px; }
+.tbd { display: inline-block; font-size: 12px; font-weight: 700; color: #8a5a00; background: #fff1cc; border-radius: 999px; padding: 0 8px; }
+.dbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 18px; }
+.db { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.db-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 10px; margin-bottom: 6px; }
+.db p { font-size: 15px; }
+.db dl { margin: 0; font-size: 14px; }
+.db dt { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+.db dd { margin: 2px 0 0; }
+.st { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 9px; white-space: nowrap; }
+.st.ok { color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.st.test { color: #8a5a00; background: #fff1cc; }
+.checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 18px; }
+.check { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.check ul { margin: 6px 0 10px; padding-left: 18px; font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
+.check .who { font-size: 14px; color: var(--muted); margin: 0; padding-top: 10px; border-top: 1px solid var(--line); }
+.result .links { margin: 0; padding-left: 18px; font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
+.result .links a { font-weight: 600; }
+.sts { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 8px; padding: 14px 16px; margin: 18px 0 4px; max-width: 80ch; }
+.sts .eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.sts-links { margin: 0 0 10px; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.sts-links a { font-weight: 600; }
+:root[data-theme="dark"] .sts { border-left-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sts { border-left-color: var(--orange); } }
+
+/* one-page site */
+.keep { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 14px 0 12px; }
+.keep > div { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 8px; padding: 12px 14px; font-size: 15px; }
+:root[data-theme="dark"] .keep > div { border-left-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .keep > div { border-left-color: var(--orange); } }
+
+.first { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin-top: 20px; }
+.first h2 { margin: 6px 0 6px; font-size: 20px; }
+.first p { margin: 0 0 10px; }
+.n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 800; font-size: 18px; }
+.srcs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+.src { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--navy); border-radius: 10px; padding: 14px 16px; font-size: 15px; }
+:root[data-theme="dark"] .src { border-top-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .src { border-top-color: var(--orange); } }
+.src h3 { font-size: 17px; margin: 0 0 6px; }
+.src p { margin: 0 0 8px; }
+.often-h { margin: 16px 0 4px; }
+.often { margin: 0; padding-left: 20px; font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
+.ladder { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.rung { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 10px; padding: 14px 18px; }
+.rung.big { border: 2px solid var(--navy); border-left-width: 4px; }
+:root[data-theme="dark"] .rung.big { border-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .rung.big { border-color: var(--orange); } }
+.rung-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.rung h3 { font-size: 19px; margin: 0 0 6px; }
+.rung .lvl { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--orange-ink); font-weight: 700; }
+.rung p { font-size: 15px; margin: 0 0 8px; }
+.rung ul { margin: 0 0 8px; padding-left: 18px; font-size: 15px; }
+.words { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 8px 16px; margin: 12px 0 0; font-size: 15px; }
+.words dt { font-weight: 700; }
+.words dd { margin: 0; }
+@media (max-width: 560px) { .words { grid-template-columns: 1fr; gap: 2px; } .words dd { margin-bottom: 10px; } }
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+.cmp .opt { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: 15px; }
+.cmp h3 { font-size: 17px; margin: 0 0 6px; }
+.cmp p { margin: 0 0 8px; }
+.checked { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+.cmp .best { color: var(--muted); margin: 0; }
+.why { margin-top: 32px; background: var(--soft); border-radius: 10px; padding: 16px 18px; }
+.why h2 { margin: 0 0 6px; font-size: 18px; }
+.steps4 { margin: 8px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; font-size: 15px; }
+.acts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 15px; }
+.acts a.btn { display: inline-block; padding: 8px 16px; background: var(--orange); color: #fff; font-weight: 600; border-radius: 8px; text-decoration: none; }
+.acts a.btn:hover { background: #c9621c; }
+
+.wrap { display: block; max-width: 980px; }
+.hero h1 { margin-bottom: 8px; }
+.four { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-direction: column; gap: 14px; counter-reset: f; }
+.four > li { counter-increment: f; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+.four > li::before { content: counter(f); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 800; font-size: 18px; }
+.four h2 { margin: 6px 0 6px; font-size: 20px; }
+.four p { margin: 0 0 10px; }
+.four .acts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 8px; font-size: 15px; }
+.four .acts a.btn { display: inline-block; padding: 8px 16px; background: var(--orange); color: #fff; font-weight: 600; border-radius: 8px; text-decoration: none; }
+.four .acts a.btn:hover { background: #c9621c; }
+.say { background: var(--soft); border-radius: 8px; padding: 10px 14px; font-size: 15px; font-style: italic; max-width: 72ch; }
+.when { margin: 6px 0 10px; padding-left: 18px; font-size: 15px; }
+.ref-h { margin-top: 48px; }
+details.fold { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-top: 12px; scroll-margin-top: 84px; }
+details.fold > summary { cursor: pointer; padding: 16px 18px; font-weight: 700; font-size: 18px; list-style: none; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::before { content: '+'; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); font-size: 15px; color: var(--orange-ink); flex: none; }
+details.fold[open] > summary::before { content: '\2212'; }
+details.fold > summary small { font-weight: 400; font-size: 14px; color: var(--muted); }
+details.fold > .inner { padding: 0 18px 20px; border-top: 1px solid var(--line); }
+details.fold > .inner > .lead { margin-top: 14px; }
+details.fold .recipe:first-of-type { margin-top: 20px; }
+</style>
+<style>
+.wrap { display: block; max-width: 900px; }
+.gnav { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 12px 0 8px; font-size: 14px; }
+.gsearch { width: 100%; max-width: 420px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font: inherit; background: var(--surface); color: var(--ink); }
+.tgroup { margin-top: 28px; scroll-margin-top: 84px; }
+.tgroup h2 { font-size: 20px; margin: 0 0 8px; }
+.glist { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.term { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; scroll-margin-top: 84px; }
+.term dt { font-weight: 700; }
+.term dd { margin: 2px 0 0; font-size: 15px; }
+.atfl { display: block; margin-top: 4px; font-size: 14px; color: var(--muted); }
+.back { display: inline-block; margin-top: 4px; font-size: 14px; }
+.none { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <img src="fls-logo.png" alt="FirstLine Schools">
+    <div>
+      <div class="name">Builders Guide</div>
+      <div class="sub">Make a tool, share it the right way</div>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <main>
+    <p><a class="back" href="index.html#words">← Back to the Builders Guide</a></p>
+    <h1>The technical words</h1>
+    <p class="lead">118 terms you will meet when you build, from AI assistants to containers, in plain words. You don’t need them to start; they’re here for when someone, or an assistant, uses one.</p>
+    <input id="q" class="gsearch" type="search" placeholder="Search, e.g. container, pull request, auth" aria-label="Search the glossary">
+    <nav class="gnav" aria-label="Groups"><a href="#ai-and-assistants">AI and assistants</a><a href="#code-and-github">Code and GitHub</a><a href="#running-a-tool-google-cloud">Running a tool: Google Cloud</a><a href="#data">Data</a><a href="#sign-in-and-access">Sign-in and access</a><a href="#google-workspace-tools">Google Workspace tools</a><a href="#how-we-work">How we work</a></nav>
+    <p id="none" class="none" hidden>No term matches that. Try a shorter word.</p>
+<section class="tgroup" id="ai-and-assistants"><h2>AI and assistants</h2><dl class="glist"><div class="term" id="agent"><dt>Agent</dt><dd>An assistant that carries out several steps on its own (reading, deciding, acting) rather than answering one question at a time.</dd></div><div class="term" id="ai-assistant"><dt>AI assistant</dt><dd>A chat tool you talk to in plain words, which writes, explains and builds things for you.<span class="atfl"><b>At FirstLine:</b> The approved ones are Claude, Gemini, ChatGPT for Teachers and Codex, always signed in with your FirstLine account.</span></dd></div><div class="term" id="artifact"><dt>Artifact</dt><dd>Claude’s word for a page or small tool it makes in the chat. It appears beside the conversation and can be shared as a link.<span class="atfl"><b>At FirstLine:</b> Shared with FirstLine, it opens for any colleague signed in to Claude.</span></dd></div><div class="term" id="canvas"><dt>Canvas</dt><dd>The space beside the chat in Gemini (and in some versions of ChatGPT) where a document, page or small app is built and edited.<span class="atfl"><b>At FirstLine:</b> Gemini Canvas can share a page straight to Google Classroom.</span></dd></div><div class="term" id="claude-code"><dt>Claude Code</dt><dd>Anthropic’s coding assistant. It runs in a browser at claude.ai/code, or on a computer.</dd></div><div class="term" id="codex"><dt>Codex</dt><dd>OpenAI’s coding assistant, which can work on code kept in GitHub.</dd></div><div class="term" id="coding-assistant"><dt>Coding assistant</dt><dd>An assistant that works on code: it reads a repository, makes changes and proposes them for review.<span class="atfl"><b>At FirstLine:</b> claude.ai/code and Codex both work on code kept in FirstLine’s GitHub.</span></dd></div><div class="term" id="connector"><dt>Connector</dt><dd>A link that lets an assistant read another system, such as Google Drive or BigQuery, with your permission.<span class="atfl"><b>At FirstLine:</b> The BigQuery Student Data Project uses a BigQuery connector that signs in as you.</span></dd></div><div class="term" id="context"><dt>Context</dt><dd>Everything the assistant can see while it answers: the conversation so far, files you attached, and instructions it was given.</dd></div><div class="term" id="custom-gpt"><dt>Custom GPT</dt><dd>ChatGPT’s saved, reusable assistant with its own instructions. OpenAI is retiring them in favor of Projects and plugins.</dd></div><div class="term" id="gem-or-skill"><dt>Gem, or skill</dt><dd>Gemini’s saved, reusable instructions for a task. Google is replacing Gems with skills.<span class="atfl"><b>At FirstLine:</b> On school accounts, Gems stop working no sooner than June 1, 2027.</span></dd></div><div class="term" id="gemini-notebook"><dt>Gemini Notebook</dt><dd>Google’s research notebook (formerly NotebookLM): you add sources and ask questions about them. Notebooks can be shared with colleagues.</dd></div><div class="term" id="hallucination"><dt>Hallucination</dt><dd>When an assistant states something false as if it were true, such as a made-up number or a link that does not exist. Check facts against the source.</dd></div><div class="term" id="mcp"><dt>MCP</dt><dd>Model Context Protocol: the common standard many connectors use to plug outside tools and data into an assistant.</dd></div><div class="term" id="model-or-llm"><dt>Model, or LLM</dt><dd>The AI underneath an assistant. LLM stands for large language model: a program trained on a great deal of text to predict and write language.</dd></div><div class="term" id="project-claude-or-chatgpt"><dt>Project (Claude or ChatGPT)</dt><dd>A workspace inside the assistant with its own instructions and files, so every chat in it starts with the same background.<span class="atfl"><b>At FirstLine:</b> BigQuery Student Data is a Claude Project shared with all of FirstLine.</span></dd></div><div class="term" id="prompt"><dt>Prompt</dt><dd>What you type to an assistant. A clear prompt says who you are, what you want, who it is for and what it should use.<span class="atfl"><b>At FirstLine:</b> Step 3 on the front page is a fill-in-the-blanks prompt.</span></dd></div><div class="term" id="token"><dt>Token</dt><dd>Two meanings. For an AI model, a small piece of text it reads or writes; limits and costs are counted in tokens. For sign-in, a temporary digital pass (see Sign-in and access).</dd></div><div class="term" id="vertex-ai"><dt>Vertex AI</dt><dd>Google Cloud’s service for using AI models, including Gemini, from inside your own software rather than through a chat window.</dd></div></dl></section>
+<section class="tgroup" id="code-and-github"><h2>Code and GitHub</h2><dl class="glist"><div class="term" id="gitignore"><dt>.gitignore</dt><dd>A list of files Git should never save, such as passwords and keys.</dd></div><div class="term" id="branch"><dt>Branch</dt><dd>A separate line of changes, so work in progress doesn’t touch the live version until it is ready.</dd></div><div class="term" id="branch-rule-or-ruleset"><dt>Branch rule, or ruleset</dt><dd>A setting that protects main, for example by requiring a pull request and a passing check before anything merges.</dd></div><div class="term" id="check-or-ci"><dt>Check, or CI</dt><dd>Automatic tests that run on every pull request; a red check blocks the merge. CI stands for continuous integration.<span class="atfl"><b>At FirstLine:</b> The starter kit’s check compiles the code and runs its tests.</span></dd></div><div class="term" id="claude-md-and-agents-md"><dt>CLAUDE.md and AGENTS.md</dt><dd>Instruction files at the top of a repository that coding assistants read before working: Claude reads CLAUDE.md, Codex reads AGENTS.md.</dd></div><div class="term" id="clone"><dt>Clone</dt><dd>A full copy of a repository on another computer. Builders working in the browser don’t need one.</dd></div><div class="term" id="code"><dt>Code</dt><dd>The written instructions a computer follows to run a tool. Assistants can write it for you.</dd></div><div class="term" id="commit"><dt>Commit</dt><dd>One saved set of changes, with a short note saying what changed.</dd></div><div class="term" id="conflict"><dt>Conflict</dt><dd>When two changes edit the same lines and Git can’t tell which to keep, so a person or assistant has to choose.</dd></div><div class="term" id="diff"><dt>Diff</dt><dd>The exact lines that changed between two versions, shown side by side, often as +added and −removed.<span class="atfl"><b>At FirstLine:</b> Reading the diff is how you review what an assistant changed.</span></dd></div><div class="term" id="git"><dt>Git</dt><dd>The system that records every change to a set of files, who made it and when, so any earlier version can be brought back.</dd></div><div class="term" id="github"><dt>GitHub</dt><dd>The website where Git repositories are kept and shared, and where changes are reviewed.<span class="atfl"><b>At FirstLine:</b> FirstLine’s code lives in the firstline-schools organization on GitHub.</span></dd></div><div class="term" id="github-actions-or-workflow"><dt>GitHub Actions, or workflow</dt><dd>GitHub’s way of running steps automatically, such as tests on a pull request or a deploy after a merge.</dd></div><div class="term" id="github-pages"><dt>GitHub Pages</dt><dd>GitHub’s free hosting for static pages from a repository. On FirstLine’s plan the page is always public.<span class="atfl"><b>At FirstLine:</b> This guide is hosted on GitHub Pages.</span></dd></div><div class="term" id="issue"><dt>Issue</dt><dd>A note filed on a repository to report a problem or ask for something.</dd></div><div class="term" id="main-or-the-default-branch"><dt>Main, or the default branch</dt><dd>The branch that holds the real, current version. At FirstLine, merging into main is what makes a change go live.</dd></div><div class="term" id="merge"><dt>Merge</dt><dd>Bringing a branch’s changes into another branch. Merging into main publishes the change.</dd></div><div class="term" id="organization"><dt>Organization</dt><dd>A shared GitHub account that owns many repositories, so code belongs to FirstLine rather than to one person.<span class="atfl"><b>At FirstLine:</b> firstline-schools. Joining it takes a seat on FirstLine’s plan.</span></dd></div><div class="term" id="public-or-private-repository"><dt>Public or private repository</dt><dd>Who can read the code. Public: anyone on the internet. Private: only people given access.<span class="atfl"><b>At FirstLine:</b> This guide’s repository is public; tool repositories are private.</span></dd></div><div class="term" id="pull-request-or-pr"><dt>Pull request, or PR</dt><dd>A request to merge one branch into another. It shows the diff, runs the checks and records the review.</dd></div><div class="term" id="readme"><dt>README</dt><dd>The file that explains a repository: what it is, who owns it, how to use it.</dd></div><div class="term" id="repository-or-repo"><dt>Repository, or repo</dt><dd>One project’s folder of files on GitHub, with its whole history of changes.<span class="atfl"><b>At FirstLine:</b> Each tool gets its own repository, such as builders-guide or health-office.</span></dd></div><div class="term" id="seat"><dt>Seat</dt><dd>One paid user on a plan, such as FirstLine’s GitHub plan.</dd></div><div class="term" id="squash-merge"><dt>Squash merge</dt><dd>A merge that combines all of a pull request’s commits into one, keeping main’s history tidy.</dd></div><div class="term" id="template-repository"><dt>Template repository</dt><dd>A repository made to be copied as the starting point for new ones.<span class="atfl"><b>At FirstLine:</b> The starter kit, fls-starter-kit, is a template.</span></dd></div><div class="term" id="test"><dt>Test</dt><dd>A small piece of code that confirms the tool still does what it promised, run automatically on every change.</dd></div></dl></section>
+<section class="tgroup" id="running-a-tool-google-cloud"><h2>Running a tool: Google Cloud</h2><dl class="glist"><div class="term" id="api"><dt>API</dt><dd>A way for one program to ask another for data or actions. API stands for application programming interface.</dd></div><div class="term" id="artifact-registry"><dt>Artifact Registry</dt><dd>Google Cloud’s storage for container images.</dd></div><div class="term" id="cloud-build"><dt>Cloud Build</dt><dd>The Google Cloud service that builds container images from code.</dd></div><div class="term" id="cloud-run"><dt>Cloud Run</dt><dd>The Google Cloud service that runs a container as a web app and handles its web address.<span class="atfl"><b>At FirstLine:</b> Every starter-kit tool runs on Cloud Run.</span></dd></div><div class="term" id="cold-start"><dt>Cold start</dt><dd>The short wait the first time a scaled-to-zero tool is opened, while a copy starts up.</dd></div><div class="term" id="container"><dt>Container</dt><dd>A sealed package holding a tool’s code and everything it needs to run, so it runs the same way on any computer.</dd></div><div class="term" id="deploy"><dt>Deploy</dt><dd>Putting a new version of a tool live. At FirstLine a merge to main deploys automatically.</dd></div><div class="term" id="dockerfile"><dt>Dockerfile</dt><dd>The recipe that says how to build a tool’s container image.<span class="atfl"><b>At FirstLine:</b> In the starter kit it lists every file the tool needs, one by one.</span></dd></div><div class="term" id="endpoint-or-route"><dt>Endpoint, or route</dt><dd>One address on a web app that does one thing, such as /api/health.</dd></div><div class="term" id="environment-variable"><dt>Environment variable</dt><dd>A setting handed to a tool when it starts, so the same code can run in different places.</dd></div><div class="term" id="front-end-and-back-end"><dt>Front end and back end</dt><dd>The front end is what people see in the browser: the page. The back end is the part on the server that checks who you are, reads data and saves entries.</dd></div><div class="term" id="google-cloud-or-gcp"><dt>Google Cloud, or GCP</dt><dd>Google’s service for running software and storing data on Google’s computers. GCP stands for Google Cloud Platform.</dd></div><div class="term" id="health-check"><dt>Health check</dt><dd>An automatic test that a tool is up and answering.<span class="atfl"><b>At FirstLine:</b> Every starter-kit tool is checked each morning.</span></dd></div><div class="term" id="html-css-and-javascript"><dt>HTML, CSS and JavaScript</dt><dd>The three languages of a web page: HTML for content, CSS for look, JavaScript for behavior.</dd></div><div class="term" id="image"><dt>Image</dt><dd>The saved, ready-to-run version of a container, built from the code.</dd></div><div class="term" id="logs"><dt>Logs</dt><dd>The running record a tool writes as it works: what happened, when, and any errors.</dd></div><div class="term" id="project-google-cloud"><dt>Project (Google Cloud)</dt><dd>A container in Google Cloud that holds a set of services, data and permissions, and its bill.<span class="atfl"><b>At FirstLine:</b> firstline-tools holds the builder tools; fls-data-warehouse holds FirstLine’s data.</span></dd></div><div class="term" id="python-and-flask"><dt>Python and Flask</dt><dd>Python is a programming language; Flask is a small Python framework for web apps.<span class="atfl"><b>At FirstLine:</b> The starter kit is a Flask app.</span></dd></div><div class="term" id="region"><dt>Region</dt><dd>Which of Google’s data centers runs a service.<span class="atfl"><b>At FirstLine:</b> FirstLine uses us-central1.</span></dd></div><div class="term" id="revision"><dt>Revision</dt><dd>Each version of a Cloud Run service; rolling back means sending traffic to an earlier revision.</dd></div><div class="term" id="rollback"><dt>Rollback</dt><dd>Putting the previous version back after a bad change.</dd></div><div class="term" id="scale-to-zero"><dt>Scale to zero</dt><dd>Running no copies of a tool while nobody is using it, so it costs almost nothing when idle.</dd></div><div class="term" id="scheduled-job"><dt>Scheduled job</dt><dd>Something set to run on a timer, such as a nightly data refresh (Cloud Scheduler on Google Cloud, a trigger in Apps Script).</dd></div><div class="term" id="secret-or-secret-manager"><dt>Secret, or Secret Manager</dt><dd>A password or key the tool needs, kept in Google’s locked store rather than in the code.</dd></div><div class="term" id="server"><dt>Server</dt><dd>A computer that runs a tool all the time, waiting for people to use it.</dd></div><div class="term" id="service"><dt>Service</dt><dd>One running tool on Cloud Run, with its own address.</dd></div><div class="term" id="static-site-and-web-app"><dt>Static site and web app</dt><dd>A static site shows the same thing to everyone. A web app has a back end, so it can know who you are and remember things.</dd></div></dl></section>
+<section class="tgroup" id="data"><h2>Data</h2><dl class="glist"><div class="term" id="authorized-or-scoped-view"><dt>Authorized, or scoped, view</dt><dd>A view that returns only the rows the person asking may see.<span class="atfl"><b>At FirstLine:</b> BigQuery Student Data uses these, so each person sees only their own students.</span></dd></div><div class="term" id="bigquery"><dt>BigQuery</dt><dd>Google Cloud’s database for large amounts of data and analysis: counts, trends, comparisons.</dd></div><div class="term" id="cloud-sql-or-postgres"><dt>Cloud SQL, or Postgres</dt><dd>A traditional database of related tables, run by Google Cloud. Postgres is the database software.</dd></div><div class="term" id="csv"><dt>CSV</dt><dd>A plain text file of rows and columns that almost any tool can open.</dd></div><div class="term" id="data-warehouse"><dt>Data warehouse</dt><dd>One central database where an organization’s official data is gathered from its source systems.<span class="atfl"><b>At FirstLine:</b> FirstLine’s is fls-data-warehouse, in BigQuery.</span></dd></div><div class="term" id="database"><dt>Database</dt><dd>An organized store of information that a tool can search and update.</dd></div><div class="term" id="dataset"><dt>Dataset</dt><dd>A named group of tables in BigQuery.<span class="atfl"><b>At FirstLine:</b> Each starter-kit tool gets its own dataset.</span></dd></div><div class="term" id="ferpa"><dt>FERPA</dt><dd>The U.S. law that protects students’ education records.</dd></div><div class="term" id="firestore"><dt>Firestore</dt><dd>Google Cloud’s database for live app records that people add and edit often.<span class="atfl"><b>At FirstLine:</b> Being tested at FirstLine as a second option for a tool’s own data.</span></dd></div><div class="term" id="pii"><dt>PII</dt><dd>Personally identifiable information: names, IDs, birthdates, anything that points to a particular person.</dd></div><div class="term" id="reserved-word"><dt>Reserved word</dt><dd>A word the database keeps for its own use. Naming a column with one can break every save.<span class="atfl"><b>At FirstLine:</b> A column named at once broke a FirstLine tool.</span></dd></div><div class="term" id="row-and-column"><dt>Row and column</dt><dd>A row is one record, such as one student or one response; a column is one kind of fact about it, such as a date.</dd></div><div class="term" id="schema"><dt>Schema</dt><dd>The list of a table’s columns and what kind of value each holds: text, number, date.</dd></div><div class="term" id="source-of-truth"><dt>Source of truth</dt><dd>The one place the real answer lives, which every other copy should match.</dd></div><div class="term" id="sql-and-query"><dt>SQL and query</dt><dd>SQL is the language for asking a database for data; a query is one such question.</dd></div><div class="term" id="sync-or-load"><dt>Sync, or load</dt><dd>Copying data from one system into another, often on a schedule.</dd></div><div class="term" id="table"><dt>Table</dt><dd>Data in rows and columns, like one tab of a spreadsheet.</dd></div><div class="term" id="view"><dt>View</dt><dd>A saved query that looks like a table but is calculated fresh each time.</dd></div></dl></section>
+<section class="tgroup" id="sign-in-and-access"><h2>Sign-in and access</h2><dl class="glist"><div class="term" id="api-key"><dt>API key</dt><dd>A secret code that lets a program use a service. It goes in Secret Manager, never in code.</dd></div><div class="term" id="authentication-or-auth"><dt>Authentication, or auth</dt><dd>Proving who you are, usually by signing in.</dd></div><div class="term" id="authorization"><dt>Authorization</dt><dd>Deciding what you may see or do once the tool knows who you are.</dd></div><div class="term" id="execute-as"><dt>Execute as</dt><dd>An Apps Script web app setting: run as the person who built it (every viewer sees what the builder can see) or as each viewer.</dd></div><div class="term" id="iam-roles-and-permissions"><dt>IAM, roles and permissions</dt><dd>IAM (identity and access management) is Google Cloud’s list of who may do what. A role is a named bundle of permissions.</dd></div><div class="term" id="iap"><dt>IAP</dt><dd>Identity-Aware Proxy: Google checks the FirstLine sign-in before anyone reaches a tool.<span class="atfl"><b>At FirstLine:</b> Starter-kit tools sit behind IAP by default.</span></dd></div><div class="term" id="least-privilege"><dt>Least privilege</dt><dd>Giving each person or program only the access it needs, and nothing more.</dd></div><div class="term" id="oauth"><dt>OAuth</dt><dd>The standard behind “Sign in with Google”: you approve access in Google’s own window, and the tool never sees your password.</dd></div><div class="term" id="service-account"><dt>Service account</dt><dd>An account for a program rather than a person, with its own narrow permissions.<span class="atfl"><b>At FirstLine:</b> Each starter-kit tool runs as its own service account.</span></dd></div><div class="term" id="sharing-setting"><dt>Sharing setting</dt><dd>The choice of who can open a file, page or link: only you, named people, everyone at FirstLine, or anyone.</dd></div><div class="term" id="sso"><dt>SSO</dt><dd>Single sign-on: one account opens many tools.<span class="atfl"><b>At FirstLine:</b> Your FirstLine Google account is FirstLine’s sign-on.</span></dd></div><div class="term" id="two-factor-authentication-or-2fa"><dt>Two-factor authentication, or 2FA</dt><dd>A second check after your password, such as a code on your phone.<span class="atfl"><b>At FirstLine:</b> Turn it on for your GitHub account.</span></dd></div><div class="term" id="workload-identity"><dt>Workload Identity</dt><dd>A way for GitHub to deploy to Google Cloud without any stored key: Google trusts GitHub’s proof of which repository is asking.</dd></div></dl></section>
+<section class="tgroup" id="google-workspace-tools"><h2>Google Workspace tools</h2><dl class="glist"><div class="term" id="apps-script"><dt>Apps Script</dt><dd>Google’s built-in code for Workspace, opened from a Sheet with Extensions → Apps Script. It can send email, run on a timer, and turn a Sheet into a page.</dd></div><div class="term" id="google-forms-and-sheets"><dt>Google Forms and Sheets</dt><dd>Forms collect answers; each answer lands as a row in a linked Sheet.</dd></div><div class="term" id="google-sites"><dt>Google Sites</dt><dd>Google’s no-code website builder.</dd></div><div class="term" id="google-workspace"><dt>Google Workspace</dt><dd>Google’s apps for work and school: Gmail, Drive, Docs, Sheets, Forms, Sites and more, signed in with your FirstLine account.</dd></div><div class="term" id="looker-studio"><dt>Looker Studio</dt><dd>Google’s free tool for charts and reports over a Sheet or database.</dd></div><div class="term" id="trigger"><dt>Trigger</dt><dd>An Apps Script setting that runs code on a schedule or when something happens, such as a form being submitted. It runs as the person who made it.</dd></div><div class="term" id="web-app-apps-script"><dt>Web app (Apps Script)</dt><dd>An Apps Script published as a page with its own address ending in /exec.</dd></div><div class="term" id="workspace-studio"><dt>Workspace Studio</dt><dd>Google’s no-code tool for automating routine tasks across Gmail, Sheets and Drive with Gemini.</dd></div></dl></section>
+<section class="tgroup" id="how-we-work"><h2>How we work</h2><dl class="glist"><div class="term" id="acceptance-criteria"><dt>Acceptance criteria</dt><dd>Checks a reviewer can watch happen to confirm the tool works.</dd></div><div class="term" id="adversarial-pass"><dt>Adversarial pass</dt><dd>Asking a second AI to try to break a tool’s rules, such as seeing another school’s data.</dd></div><div class="term" id="mock-or-fake-data"><dt>Mock, or fake data</dt><dd>Invented data used for testing. It must not contain real students or staff.</dd></div><div class="term" id="must-never-list"><dt>Must Never list</dt><dd>The things a tool must never do, written down so they can be checked.</dd></div><div class="term" id="safe-to-ship"><dt>Safe to Ship</dt><dd>AI for Equity’s two-part review before a tool is relied on: one guide for the builder and one for the supervisor.</dd></div><div class="term" id="spec-or-plan"><dt>Spec, or plan</dt><dd>A short written description of what a tool does, who uses it and what each person may see, written before building.</dd></div><div class="term" id="version"><dt>Version</dt><dd>One saved state of a tool. Every merge makes a new one.</dd></div></dl></section>
+    <p style="margin-top:28px"><a class="back" href="index.html">← Back to the Builders Guide</a></p>
+  </main>
+</div>
+<script>
+(function () {
+  var box = document.getElementById('q');
+  var none = document.getElementById('none');
+  box.addEventListener('input', function () {
+    var q = box.value.trim().toLowerCase(), shown = 0;
+    document.querySelectorAll('.term').forEach(function (t) {
+      var hit = !q || t.textContent.toLowerCase().indexOf(q) >= 0;
+      t.hidden = !hit; if (hit) shown++;
+    });
+    document.querySelectorAll('.tgroup').forEach(function (g) {
+      g.hidden = !g.querySelector('.term:not([hidden])');
+    });
+    none.hidden = shown > 0;
+  });
+})();
+</script>
+</body>
+</html>

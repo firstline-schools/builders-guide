@@ -22,6 +22,7 @@ paths this page describes.
   recipe id it names must exist.
 
 ## Rules
+- `glossary.html` is a second page: the technical words (118 terms, seven groups, a search box), linked from the end of `#words` ("Dive deeper"). Plain words; "At FirstLine" lines only for facts you have checked. Add terms in the right group, alphabetically.
 - `index.html` is the source. Styles and script are inline; `fls-logo.png` is the only other file.
 - **Public repository:** no student or staff names, IDs or records, no passwords, keys or tokens.
 - People build in **claude.ai**; never tell a reader to use a terminal.
