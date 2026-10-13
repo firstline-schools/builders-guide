@@ -267,6 +267,14 @@ ol.toc { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: col
 .first h2 { margin: 6px 0 6px; font-size: 20px; }
 .first p { margin: 0 0 10px; }
 .n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 800; font-size: 18px; }
+.srcs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+.src { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--navy); border-radius: 10px; padding: 14px 16px; font-size: 15px; }
+:root[data-theme="dark"] .src { border-top-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .src { border-top-color: var(--orange); } }
+.src h3 { font-size: 17px; margin: 0 0 6px; }
+.src p { margin: 0 0 8px; }
+.often-h { margin: 16px 0 4px; }
+.often { margin: 0; padding-left: 20px; font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
 .ladder { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .rung { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 10px; padding: 14px 18px; }
 .rung.big { border: 2px solid var(--navy); border-left-width: 4px; }
@@ -337,6 +345,7 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
         <p class="lead">You don’t need any of these words to start. They’re here so the rest of the page makes sense.</p>
         <dl class="words">
           <dt>Tool, or app</dt><dd>The same thing on this page: anything you make that other people use. A page, a form, a checklist, a tracker or a full web app are all tools.</dd>
+          <dt>Source of data</dt><dd>The one place the real answer lives, sometimes called the source of truth. For FirstLine’s official data that is BigQuery; for your own class or team data it is usually a Sheet or Form in Google Drive.</dd>
           <dt>Page, or site</dt><dd>Something people open in a web browser by its address (a link). A site is one or more pages.</dd>
           <dt>Static page</dt><dd>A page that says the same thing to everyone until you change it by hand. The simplest kind of tool.</dd>
           <dt>Artifact</dt><dd>What Claude calls a page or small tool it makes for you in the chat. It shows up next to the conversation, and sharing it gives a link that opens only for people signed in to FirstLine’s Claude.</dd>
@@ -345,8 +354,8 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
           <dt>Google Site</dt><dd>Google’s page builder. You build by clicking, not by writing code.</dd>
           <dt>Apps Script</dt><dd>Small programs attached to a Google Sheet or Form. They can send an email, run on a schedule, or show a Sheet as a page. Claude writes them; you paste them in.</dd>
           <dt>Code</dt><dd>The written instructions that make a page or app work. The AI assistant writes it; you describe what you want.</dd>
-          <dt>FirstLine’s data</dt><dd>Rosters, attendance, grades and assessments, kept in <b>BigQuery</b>, FirstLine’s data warehouse.</dd>
-          <dt>The BQ Project</dt><dd>A project in Claude that lets you ask questions of FirstLine’s data in plain English, and only shows you the students you’re allowed to see.</dd>
+          <dt>FirstLine’s data</dt><dd>Everything from FirstLine’s systems: assessments, attendance, behavior, rosters. It is kept in <b>BigQuery</b>, FirstLine’s data warehouse.</dd>
+          <dt>The BQ Project</dt><dd>A project in Claude that pulls FirstLine’s data for you in plain English, once or every week, and only shows you the students you’re allowed to see.</dd>
           <dt>Database</dt><dd>Where a tool keeps what people type into it, so it’s still there tomorrow. A Google Sheet is the simplest kind.</dd>
           <dt>Server, or back end</dt><dd>A computer that runs your tool all the time: it checks who is signed in, reads FirstLine’s data and saves what people enter. Only the last row needs one.</dd>
           <dt>GitHub</dt><dd>Where code is kept, with every change recorded. You only need it for GitHub Pages and the starter kit.</dd>
@@ -356,45 +365,68 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
       <div class="first">
         <div class="n">1</div>
         <div>
-          <h2>What are you building?</h2>
+          <h2>Start with your data: where does it come from?</h2>
+          <p>Every tool starts from a source of data, the one place the real answer lives. Pick yours first; it decides most of the rest.</p>
+        </div>
+      </div>
+      <div class="srcs">
+        <div class="src">
+          <h3>Nothing to pull: you write it</h3>
+          <p>An explainer, a homework page, a checklist. You type what it says.</p>
+        </div>
+        <div class="src">
+          <h3>FirstLine’s official data</h3>
+          <p>Anything from FirstLine’s systems: assessments, attendance, behavior, rosters. It is all in <b>BigQuery</b>, and you reach it through the <b>BQ Project</b> in Claude. Use it whether you pull once or every week.</p>
+          <div class="acts"><a href="#claude-bq">The BQ Project</a></div>
+        </div>
+        <div class="src">
+          <h3>Your own data in Google Drive</h3>
+          <p>A class exercise, a survey you ran, your team’s tracker. The Sheet or Form it lives in is the source.</p>
+          <div class="acts"><a href="#google">Google recipes</a></div>
+        </div>
+      </div>
+      <p class="often-h"><b>Then: how often does it change?</b></p>
+      <ul class="often">
+        <li><b>Once.</b> Pull it once and build it once: a survey you give once a year becomes one page that doesn’t change.</li>
+        <li><b>Every week or so.</b> Pull it again on a schedule and refresh what you made: a weekly scorecard from the BQ Project. FirstLine’s CEO builds a weekly scorecard this way.</li>
+        <li><b>By itself, all the time,</b> with each person seeing only their own part: that is the last row below.</li>
+      </ul>
+      <div class="first">
+        <div class="n">2</div>
+        <div>
+          <h2>What are you making, and who sees it?</h2>
           <p>Find the first row that fits, starting from the top. Each one is a step more involved than the one before. Only the last one needs GitHub. Want the trade-offs side by side? Open <a href="#compare">Pros and cons</a> below the rows.</p>
         </div>
       </div>
       <ol class="ladder">
         <li class="rung">
-          <div class="rung-h"><span class="lvl">Simplest</span><h3>A page or checklist you write once</h3></div>
-          <p class="like">An explainer, a homework page, a checklist for your team, a draft of something. You write what it says; nothing changes on its own.</p>
-          <p class="where"><b>Build it in Claude.</b> Describe it and Claude makes it on the spot. The link opens for people at FirstLine signed in to Claude, so for families use the next rows.</p>
+          <div class="rung-h"><span class="lvl">Simplest</span><h3>Something for you or for FirstLine staff</h3></div>
+          <p>A page, an explainer, a checklist, or a scorecard you refresh each week.</p>
+          <p><b>A Claude artifact.</b> Describe it and Claude makes it on the spot. The link opens for people at FirstLine signed in to Claude, so for families use the next row.</p>
           <div class="acts"><a href="#claude-page">Publish a page</a><a href="#claude-checklist">A checklist</a><a href="#claude-shared">Shared entries</a></div>
         </li>
         <li class="rung">
-          <div class="rung-h"><span class="lvl">Simple</span><h3>A one-time look at FirstLine data</h3></div>
-          <p class="like">“How many of our 3rd graders have missed ten or more days?” A list for Thursday’s meeting. A chart for one presentation. You need the answer now, not a tool that keeps updating.</p>
-          <p class="where"><b>Ask Claude, with the BQ Project.</b> It reads FirstLine’s data and answers. To keep the result, put it in a Sheet.</p>
-          <div class="acts"><a href="#claude-bq">The BQ Project</a><a href="#claude-sheet">Into a Sheet</a></div>
+          <div class="rung-h"><span class="lvl">Simple</span><h3>A page for families, or for everybody</h3></div>
+          <p>Everyone sees the same thing, and you update it when something changes. Nothing about an individual student on a page families can open.</p>
+          <p><b>A Google Site</b>, open to anyone, to FirstLine, or to one team. Or <b>GitHub Pages</b>, if you want it kept as code.</p>
+          <div class="acts"><a href="#google-site">A public page</a><a href="#google-restricted">FirstLine only</a><a href="#github-page">GitHub Pages</a></div>
         </li>
         <li class="rung">
-          <div class="rung-h"><span class="lvl">Simple</span><h3>A page for everybody</h3></div>
-          <p class="like">For families, for all staff, or for one school, and everyone sees the same thing. You update it by hand when something changes.</p>
-          <p class="where"><b>A Google Site</b>, public or open only to FirstLine.</p>
-          <div class="acts"><a href="#google-site">A public page</a><a href="#google-restricted">FirstLine only</a></div>
-        </li>
-        <li class="rung">
-          <div class="rung-h"><span class="lvl">A step more</span><h3>Something that collects answers or sends things</h3></div>
-          <p class="like">A sign-up, a survey, a weekly email, a Sheet that keeps filling up and shows as a live page or a chart.</p>
-          <p class="where"><b>Google Forms, Sheets and Apps Script.</b> Claude writes the script; you paste it in.</p>
-          <div class="acts"><a href="#google-auto">Survey with emails</a><a href="#google-webapp">A Sheet as a page</a><a href="#google-looker">Charts</a></div>
+          <div class="rung-h"><span class="lvl">A step more</span><h3>Something that collects answers, sends things, or shows a Sheet</h3></div>
+          <p>A sign-up, a survey, a weekly email, or a page or chart over a Sheet that keeps filling up or that you refresh from FirstLine’s data.</p>
+          <p><b>Google Forms, Sheets and Apps Script.</b> Claude writes the script; you paste it in.</p>
+          <div class="acts"><a href="#google-auto">Survey with emails</a><a href="#google-webapp">A Sheet as a page</a><a href="#claude-sheet">FirstLine data into a Sheet</a><a href="#google-looker">Charts</a></div>
         </li>
         <li class="rung big">
-          <div class="rung-h"><span class="lvl">Most involved</span><h3>Data that keeps updating, by role</h3></div>
-          <p class="like">Any one of these:</p>
+          <div class="rung-h"><span class="lvl">Most involved</span><h3>It refreshes by itself, and people see different things</h3></div>
+          <p>Any one of these:</p>
           <ul>
-            <li>FirstLine data (rosters, attendance, grades) that has to <b>refresh by itself</b>, with nobody pulling it;</li>
+            <li>FirstLine’s data has to <b>refresh by itself</b>, with nobody pulling it;</li>
             <li>people see <b>different things by role or school</b>;</li>
             <li>it keeps <b>records someone reviews</b> or signs off later, or you’ll compare them <b>over time or across schools</b>;</li>
             <li><b>students</b> use it.</li>
           </ul>
-          <p class="where"><b>The FirstLine starter kit.</b> A real web app with its own database, built in claude.ai/code in your browser. <b>This is the only path that needs GitHub.</b> Fill in one form; we add you to GitHub, make your tool and email you its address.</p>
+          <p><b>The FirstLine starter kit.</b> A real web app with its own database, built in claude.ai/code in your browser. <b>This is the only row that needs GitHub.</b> Fill in one form; we add you to GitHub, make your tool and email you its address.</p>
           <div class="acts"><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">Request your tool</a><a href="#backend">How it works</a></div>
         </li>
       </ol>
@@ -407,10 +439,10 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
             <p><b>Watch out:</b> not for families, students or anyone outside FirstLine. It lives in your Claude account.</p>
             <p class="best">Best for: a page, explainer or checklist for FirstLine staff. <a href="#claude-page">Recipe</a></p></div>
           <div class="opt"><h3>Gemini (Canvas)</h3>
-            <p><b>Who can open it:</b> on a school Google account, sharing a Canvas is off unless FirstLine’s Google administrator turns it on.</p>
+            <p><b>Who can open it:</b> people you send the link to. FirstLine’s Google administrator has sharing turned on.</p>
             <p><b>Good:</b> every staff member already has it with their FirstLine Google account. It can build a page or small app and show you a preview.</p>
-            <p><b>Watch out:</b> don’t plan on sending its link. Use it to draft, then put the page in a Google Site, Apps Script or GitHub.</p>
-            <p class="best">Best for: drafting, if Gemini is what you know.</p></div>
+            <p><b>Watch out:</b> fewer FirstLine staff use it, so there are no recipes for it here yet. For a page that has to last, put it in a Google Site, Apps Script or GitHub.</p>
+            <p class="best">Best for: a quick page or small app, if Gemini is what you know.</p></div>
           <div class="opt"><h3>ChatGPT for Teachers (Canvas)</h3>
             <p><b>Who can open it:</b> links made in a school workspace open only for members of that workspace. FirstLine’s shared workspace is Claude, so you can’t share a page from here the way you share a Claude artifact.</p>
             <p><b>Good:</b> it can draft the page and write the code for any option below.</p>
@@ -440,20 +472,20 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
       </div></details>
       <p class="muted small" style="margin-top:10px">Not sure which row? <a href="#path">Answer six questions</a> and you’ll get the exact steps.</p>
       <div class="first">
-        <div class="n">2</div>
+        <div class="n">3</div>
         <div>
-          <h2>Describe it to Claude, and say which row you picked</h2>
-          <p>Open <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> <b>signed in with your FirstLine account</b>; a personal account doesn’t carry FirstLine’s privacy protections. (Gemini, ChatGPT for Teachers and Codex are approved too, on FirstLine accounts.) Name the row, so the assistant builds it that way and doesn’t pick a different one for you.</p>
-          <p class="say">“I’m a <b>[your role]</b> at FirstLine. I want <b>[what it does]</b> for <b>[who uses it]</b>. I’m building it as <b>[the row you picked: a Claude page, a question for the BQ Project, a Google Site, a Google Form and Sheet, or the starter kit]</b>. Walk me through it step by step.”</p>
+          <h2>Describe it to Claude: your data, what you’re making, who sees it</h2>
+          <p>Open <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> <b>signed in with your FirstLine account</b>; a personal account doesn’t carry FirstLine’s privacy protections. (Gemini, ChatGPT for Teachers and Codex are approved too, on FirstLine accounts.) Say all three, so the assistant builds it that way and doesn’t pick a different path for you.</p>
+          <p class="say">“I’m a <b>[your role]</b> at FirstLine. My data comes from <b>[FirstLine’s data through the BQ Project / a Sheet or Form in my Drive / nothing, I write it]</b> and changes <b>[once / every week / all the time]</b>. I want <b>[what it does]</b> for <b>[who sees it]</b>, built as <b>[the row you picked]</b>. Walk me through it step by step.”</p>
           <ul class="when">
-            <li><i>“…a sign-up for Saturday tutoring, for families at my school. I’m building it as a Google Form and Sheet.”</i></li>
-            <li><i>“…a page showing each of my teachers’ attendance and latest scores, updated every day, for me and my principal. I’m building it with the starter kit.”</i></li>
+            <li><i>“…My data comes from a Google Form and changes as families sign up. I want a sign-up for Saturday tutoring for families at my school, built as a Google Form and Sheet.”</i></li>
+            <li><i>“…My data comes from FirstLine’s data through the BQ Project and changes every week. I want a weekly scorecard of my school’s attendance and assessment results for me and my supervisor, built as a Claude artifact I refresh each Monday.”</i></li>
           </ul>
           <div class="acts"><a class="btn" href="https://claude.ai" target="_blank" rel="noopener">Open Claude</a></div>
         </div>
       </div>
       <div class="first">
-        <div class="n">3</div>
+        <div class="n">4</div>
         <div>
           <h2>Check it before others rely on it</h2>
           <p>Go through the short checklist, then show it to your supervisor. Tools that run on their own, keep records or that students use get a fuller review.</p>
@@ -697,7 +729,7 @@ function esc(t) {
 
 <script>
 (function () {
-  var Q = [{"id": "who", "q": "Who will use it?", "o": [["me", "Just me"], ["staff", "People at FirstLine, and everyone sees the same thing"], ["team", "A chosen group (one school, one team), and they all see the same thing"], ["roles", "People at FirstLine, and what you see depends on your role or school"], ["public", "Families or students, without a FirstLine sign-in"]]}, {"id": "data", "q": "Where does its information come from?", "o": [["typed", "I write it, and update it by hand when it changes"], ["sheet", "A Google Sheet or Form that keeps filling up"], ["claude", "FirstLine data (rosters, grades, assessments) that I pull through the BQ Project in Claude"], ["warehouse", "FirstLine data that has to refresh by itself, with nobody pulling it"]]}, {"id": "store", "q": "Does it keep what people enter?", "o": [["no", "No, people only read it"], ["responses", "Yes, responses pile up and someone reads them"], ["records", "Yes, and someone reviews, corrects or signs off on each one later"]]}, {"id": "auto", "q": "Does it need to do anything on its own?", "o": [["no", "No"], ["yes", "Yes: send an email, or refresh on a schedule"]]}, {"id": "compare", "q": "Will you want to compare it over time, or across schools?", "o": [["no", "No, it’s for what is happening now"], ["yes", "Yes: this year against last, or one school against another"]]}, {"id": "students", "q": "Does it involve information about individual students?", "o": [["no", "No"], ["yes", "Yes: names, scores, attendance, anything about a particular child"]]}], EX = [{"k": "home", "label": "Homework page for families", "a": {"who": "public", "data": "typed", "store": "no", "auto": "no", "compare": "no", "students": "no"}}, {"k": "check", "label": "Team checklist", "a": {"who": "team", "data": "typed", "store": "no", "auto": "no", "compare": "no", "students": "no"}}, {"k": "req", "label": "PD survey with results to presenters", "a": {"who": "staff", "data": "sheet", "store": "responses", "auto": "yes", "compare": "no", "students": "no"}}, {"k": "lha", "label": "A school’s student mastery tracker", "real": true, "a": {"who": "team", "data": "claude", "store": "no", "auto": "no", "compare": "no", "students": "yes"}}, {"k": "reftr", "label": "Referral trends across schools", "a": {"who": "roles", "data": "sheet", "store": "responses", "auto": "no", "compare": "yes", "students": "yes"}}, {"k": "game", "label": "Math game that keeps scores", "a": {"who": "public", "data": "typed", "store": "responses", "auto": "no", "compare": "no", "students": "yes"}}, {"k": "nurse", "label": "Nurse’s injury reports", "real": true, "a": {"who": "roles", "data": "warehouse", "store": "records", "auto": "no", "compare": "yes", "students": "yes"}}], T = {"claude-page": "Publish a page from Claude", "claude-checklist": "An interactive checklist that remembers each person’s ticks", "claude-shared": "A small tool with shared entries", "claude-bq": "Ask questions of FirstLine’s data: the BQ Project", "claude-sheet": "Pull FirstLine data into a Sheet, then publish it", "google-site": "A public page: Google Sites", "google-restricted": "A page only some people can open", "google-webapp": "A Sheet as a live web page", "google-looker": "Charts from a Sheet: Looker Studio", "google-auto": "A PD survey that sends each presenter their own results", "github-page": "Publish a page with GitHub Pages", "backend-start": "Start a tool", "backend-data": "Keep your own data", "backend-loop": "Make one change", "backend-stuck": "When you get stuck", "backend-move": "Move an Apps Script tool to code", "backend-students": "A tool students use"};
+  var Q = [{"id": "data", "q": "Where does its data come from?", "o": [["typed", "Nothing to pull: I write it, and update it by hand"], ["sheet", "My own data in a Google Sheet or Form"], ["claude", "FirstLine’s official data (assessments, attendance, behavior), pulled through the BQ Project in Claude, once or every week"], ["warehouse", "FirstLine’s official data that has to refresh by itself, with nobody pulling it"]]}, {"id": "who", "q": "Who will use it?", "o": [["me", "Just me"], ["staff", "People at FirstLine, and everyone sees the same thing"], ["team", "A chosen group (one school, one team), and they all see the same thing"], ["roles", "People at FirstLine, and what you see depends on your role or school"], ["public", "Families or students, without a FirstLine sign-in"]]}, {"id": "store", "q": "Does it keep what people enter?", "o": [["no", "No, people only read it"], ["responses", "Yes, responses pile up and someone reads them"], ["records", "Yes, and someone reviews, corrects or signs off on each one later"]]}, {"id": "auto", "q": "Does it need to do anything on its own?", "o": [["no", "No"], ["yes", "Yes: send an email, or refresh on a schedule"]]}, {"id": "compare", "q": "Will you want to compare it over time, or across schools?", "o": [["no", "No, it’s for what is happening now"], ["yes", "Yes: this year against last, or one school against another"]]}, {"id": "students", "q": "Does it involve information about individual students?", "o": [["no", "No"], ["yes", "Yes: names, scores, attendance, anything about a particular child"]]}], EX = [{"k": "home", "label": "Homework page for families", "a": {"who": "public", "data": "typed", "store": "no", "auto": "no", "compare": "no", "students": "no"}}, {"k": "check", "label": "Team checklist", "a": {"who": "team", "data": "typed", "store": "no", "auto": "no", "compare": "no", "students": "no"}}, {"k": "req", "label": "PD survey with results to presenters", "a": {"who": "staff", "data": "sheet", "store": "responses", "auto": "yes", "compare": "no", "students": "no"}}, {"k": "lha", "label": "A school’s student mastery tracker", "real": true, "a": {"who": "team", "data": "claude", "store": "no", "auto": "no", "compare": "no", "students": "yes"}}, {"k": "reftr", "label": "Referral trends across schools", "a": {"who": "roles", "data": "sheet", "store": "responses", "auto": "no", "compare": "yes", "students": "yes"}}, {"k": "game", "label": "Math game that keeps scores", "a": {"who": "public", "data": "typed", "store": "responses", "auto": "no", "compare": "no", "students": "yes"}}, {"k": "nurse", "label": "Nurse’s injury reports", "real": true, "a": {"who": "roles", "data": "warehouse", "store": "records", "auto": "no", "compare": "yes", "students": "yes"}}], T = {"claude-page": "Publish a page from Claude", "claude-checklist": "An interactive checklist that remembers each person’s ticks", "claude-shared": "A small tool with shared entries", "claude-bq": "Ask questions of FirstLine’s data: the BQ Project", "claude-sheet": "Pull FirstLine data into a Sheet, then publish it", "google-site": "A public page: Google Sites", "google-restricted": "A page only some people can open", "google-webapp": "A Sheet as a live web page", "google-looker": "Charts from a Sheet: Looker Studio", "google-auto": "A PD survey that sends each presenter their own results", "github-page": "Publish a page with GitHub Pages", "backend-start": "Start a tool", "backend-data": "Keep your own data", "backend-loop": "Make one change", "backend-stuck": "When you get stuck", "backend-move": "Move an Apps Script tool to code", "backend-students": "A tool students use"};
 
   // ---------- a link opens the folded section that holds its target ----------
   function show() {
@@ -777,8 +809,8 @@ function esc(t) {
         what: 'Built from the FirstLine starter kit: a real web app behind FirstLine sign-in, with its own database and access by job title. You build it in claude.ai/code, in a browser.' };
     }
     if (a.data === 'claude' && a.who === 'me' && a.store === 'no' && a.auto === 'no') return { path: 'Claude: the BQ Project', need: need, gh: false, steps: ['claude-bq', 'claude-sheet'],
-      why: ['It is a one-time look at FirstLine data, for you. Ask the BQ Project; nothing needs to be built.'],
-      what: 'Ask Claude your question in the BQ Project. If you want to keep the answer, put it in a Sheet. If others start relying on it, answer again.' };
+      why: ['FirstLine’s official data, for you. The BQ Project pulls it whenever you ask, once or every week.'],
+      what: 'Pull it through the BQ Project in Claude and have Claude build the page or scorecard from it. Pull again each week to refresh it. If others start relying on it, answer again.' };
     if (goog.length) {
       var gs = [];
       if (a.data === 'claude') gs.push('claude-bq', 'claude-sheet', 'google-webapp', 'backend-move');

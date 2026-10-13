@@ -6,11 +6,15 @@ building a tool. It is NOT the starter kit (`firstline-schools/fls-starter-kit`)
 paths this page describes.
 
 ## How the page is laid out
-- Top: three steps. (1) "What are you building?": five rows from simplest to most involved (a Claude
-  page → a one-time look at data through the BQ Project → a Google Site → Forms/Sheets/Apps Script →
-  the starter kit). Only the last row needs GitHub; keep it last. (2) Describe it to Claude and name
-  the row picked, so the assistant doesn't choose a different path. (3) Check it. Keep this short; it
-  is the front door, and it must not send people to GitHub first.
+- Top: four steps. (1) Start with your data: where it comes from (you write it / FirstLine's
+  official data in BigQuery through the BQ Project / your own Sheet or Form in Drive), then how often
+  it changes (once / weekly / by itself). (2) What you're making and who sees it: four rows, simplest
+  first (a Claude artifact → a Google Site or GitHub Pages → Forms/Sheets/Apps Script → the starter
+  kit); only the last needs GitHub; keep it last. (3) Describe it to Claude naming all three.
+  (4) Check it. Keep this short; it is the front door; never send people to GitHub first.
+- Facts about what each platform can do (who can open a shared link, plan limits) change often:
+  check the vendor's own documentation before changing them, and keep the "last checked" date on
+  `#compare` current.
 - Below: folded `<details>` sections, each with an `id` that links open it (`#words`, `#compare`, `#google`, `#claude`,
   `#github`, `#backend`, `#path`, `#check`, `#data`, `#lessons`, and each recipe's own id).
   Any `href="#x"` must point at an id that exists on the page.
