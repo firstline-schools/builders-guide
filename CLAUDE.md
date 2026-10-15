@@ -6,12 +6,15 @@ building a tool. It is NOT the starter kit (`firstline-schools/fls-starter-kit`)
 paths this page describes.
 
 ## How the page is laid out
-- Top: four steps. (1) Start with your data: where it comes from (you write it / FirstLine's
-  official data in BigQuery through the BQ Project / your own Sheet or Form in Drive), then how often
-  it changes (once / weekly / by itself). (2) What you're making and who sees it: four rows, simplest
-  first (a Claude artifact → a Google Site or GitHub Pages → Forms/Sheets/Apps Script → the starter
-  kit); only the last needs GitHub; keep it last. (3) Describe it to Claude naming all three.
-  (4) Check it. Keep this short; it is the front door; never send people to GitHub first.
+- Top (AI Task Force feedback, 2026-10-14: "too busy", pathways first, more graphic, prompts): the four
+  stops as one graphic trail, simplest first (1 a Claude artifact or Gemini Canvas page; 2 a Google Site;
+  3 Forms/Sheets/Apps Script; 4 the starter kit, the only stop that needs GitHub; keep it last). Each stop
+  has "Start with a prompt" (opens the prompt box: Copy, Open in Claude = claude.ai/new?q=, Open in ChatGPT =
+  chatgpt.com/?q=, Gemini = copy then paste) and direct links (sites.new, forms.new). Then one "not sure?"
+  line and four tiles (#source, #describe, #check, #ip). Keep the top to exactly that.
+- The folds that used to sit on top (#words, #source, #describe, #compare) live under "Good to know".
+- #ip (who owns what you build) sits after the rules; vendor terms checked 2026-10-14; two FirstLine policy
+  lines are marked "To confirm" until FirstLine decides.
 - Facts about what each platform can do (who can open a shared link, plan limits) change often:
   check the vendor's own documentation before changing them, and keep the "last checked" date on
   `#compare` current.
