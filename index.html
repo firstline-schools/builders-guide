@@ -258,6 +258,41 @@ ol.toc { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: col
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sts { border-left-color: var(--orange); } }
 
 /* one-page site */
+/* v3: the trail */
+.trail { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; position: relative; }
+.trail::before { content: ''; position: absolute; top: 34px; left: 6%; right: 6%; height: 3px; background: linear-gradient(90deg, var(--orange), var(--navy)); border-radius: 2px; z-index: 0; }
+.stop { position: relative; z-index: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px 16px; display: flex; flex-direction: column; }
+.stop.big { border: 2px solid var(--navy); }
+:root[data-theme="dark"] .stop.big { border-color: var(--orange); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stop.big { border-color: var(--orange); } }
+.stop-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.ico { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--orange); color: #fff; flex: none; }
+.stop.big .ico { background: var(--navy); }
+.ico svg { width: 24px; height: 24px; }
+.stop .lvl { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--orange-ink); font-weight: 700; }
+.stop h2 { font-size: 17px; line-height: 1.3; margin: 0 0 6px; }
+.stop .for { font-size: 14px; color: var(--muted); margin: 0 0 8px; }
+.stop .how { font-size: 14px; margin: 0 0 12px; }
+.stop .go { margin-top: auto; }
+.go { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 14px; }
+.pbtn, .btn-sm { font: inherit; font-size: 14px; font-weight: 600; padding: 7px 12px; border-radius: 8px; border: 0; background: var(--orange); color: #fff; cursor: pointer; text-decoration: none; display: inline-block; }
+.pbtn:hover, .btn-sm:hover { background: #c9621c; }
+.go a.btn { padding: 7px 12px; background: var(--navy); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+@media (max-width: 900px) { .trail { grid-template-columns: repeat(2, minmax(0, 1fr)); } .trail::before { display: none; } }
+@media (max-width: 520px) { .trail { grid-template-columns: 1fr; } }
+.prompt-box { margin-top: 14px; background: var(--surface); border: 2px solid var(--orange); border-radius: 12px; padding: 14px 16px; }
+.pb-head { display: flex; justify-content: space-between; align-items: center; }
+.pb-x { font: inherit; font-size: 22px; line-height: 1; background: none; border: 0; color: var(--muted); cursor: pointer; }
+#pb-text { width: 100%; font: inherit; font-size: 15px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); margin: 6px 0 10px; resize: vertical; }
+.unsure { margin: 16px 0 0; font-size: 15px; }
+.also { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 18px 0 8px; }
+.also-i { display: block; background: var(--soft); border-radius: 10px; padding: 12px 14px; text-decoration: none; color: var(--ink); }
+.also-i:hover { outline: 2px solid var(--orange); }
+.also-i b { display: block; color: var(--orange-ink); margin-bottom: 2px; }
+.also-i span { font-size: 14px; color: var(--muted); }
+#ip h3 { margin: 18px 0 6px; font-size: 16px; }
+.rules.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px 22px; }
+
 .keep { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 14px 0 12px; }
 .keep > div { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 8px; padding: 12px 14px; font-size: 15px; }
 :root[data-theme="dark"] .keep > div { border-left-color: var(--orange); }
@@ -341,170 +376,55 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
 
     <section class="hero" id="start">
       <h1>Build a tool for FirstLine</h1>
-      <p class="lead">Start with the simplest thing that works. Most tools never need more than Claude or Google. (A <b>tool</b> is anything you make that other people use: a page, a form, a checklist or an app.)</p>
-      <details class="fold" id="words"><summary>New to this? The words on this page<small>tool, app, page, artifact, GitHub…</small></summary><div class="inner">
-        <p class="lead">You don’t need any of these words to start. They’re here so the rest of the page makes sense.</p>
-        <dl class="words">
-          <dt>Tool, or app</dt><dd>The same thing on this page: anything you make that other people use. A page, a form, a checklist, a tracker or a full web app are all tools.</dd>
-          <dt>Source of data</dt><dd>The one place the real answer lives, sometimes called the source of truth. For FirstLine’s official data that is BigQuery; for your own class or team data it is usually a Sheet or Form in Google Drive.</dd>
-          <dt>Page, or site</dt><dd>Something people open in a web browser by its address (a link). A site is one or more pages.</dd>
-          <dt>Static page</dt><dd>A page that says the same thing to everyone until you change it by hand. The simplest kind of tool.</dd>
-          <dt>Artifact</dt><dd>What Claude calls a page or small tool it makes for you in the chat. It shows up next to the conversation, and sharing it gives a link that opens only for people signed in to FirstLine’s Claude.</dd>
-          <dt>Publish, share link</dt><dd>Turning what you made into an address other people can open. Who can open it (anyone, only FirstLine, only your team) is a setting you choose.</dd>
-          <dt>Sign-in</dt><dd>Logging in with your FirstLine Google account. “Behind FirstLine sign-in” means only people with a FirstLine account can open it.</dd>
-          <dt>Google Site</dt><dd>Google’s page builder. You build by clicking, not by writing code.</dd>
-          <dt>Apps Script</dt><dd>Small programs attached to a Google Sheet or Form. They can send an email, run on a schedule, or show a Sheet as a page. Claude writes them; you paste them in.</dd>
-          <dt>Code</dt><dd>The written instructions that make a page or app work. The AI assistant writes it; you describe what you want.</dd>
-          <dt>FirstLine’s data</dt><dd>Everything from FirstLine’s systems: assessments, attendance, behavior, rosters. It is kept in <b>BigQuery</b>, FirstLine’s data warehouse.</dd>
-          <dt>The BQ Project</dt><dd>A project in Claude that pulls FirstLine’s data for you in plain English, once or every week, and only shows you the students you’re allowed to see.</dd>
-          <dt>Database</dt><dd>Where a tool keeps what people type into it, so it’s still there tomorrow. A Google Sheet is the simplest kind.</dd>
-          <dt>Server, or back end</dt><dd>A computer that runs your tool all the time: it checks who is signed in, reads FirstLine’s data and saves what people enter. Only the last row needs one.</dd>
-          <dt>GitHub</dt><dd>Where code is kept, with every change recorded. You only need it for GitHub Pages and the starter kit.</dd>
-          <dt>The starter kit</dt><dd>FirstLine’s ready-made beginning for a full web app with sign-in, FirstLine’s data and its own database. You request it with a form.</dd>
-        </dl>
-        <p style="margin-top:12px"><a href="glossary.html"><b>Dive deeper: more technical terms →</b></a> <span class="muted small">containers, Cloud Run, repositories, pull requests, auth, BigQuery and more, in plain words</span></p>
-      </div></details>
-      <div class="first">
-        <div class="n">1</div>
-        <div>
-          <h2>Start with your data: where does it come from?</h2>
-          <p>Every tool starts from a source of data, the one place the real answer lives. Pick yours first; it decides most of the rest.</p>
-        </div>
-      </div>
-      <div class="srcs">
-        <div class="src">
-          <h3>Nothing to pull: you write it</h3>
-          <p>An explainer, a homework page, a checklist. You type what it says.</p>
-        </div>
-        <div class="src">
-          <h3>FirstLine’s official data</h3>
-          <p>Anything from FirstLine’s systems: assessments, attendance, behavior, rosters. It is all in <b>BigQuery</b>, and you reach it through the <b>BQ Project</b> in Claude. Use it whether you pull once or every week.</p>
-          <div class="acts"><a href="#claude-bq">The BQ Project</a></div>
-        </div>
-        <div class="src">
-          <h3>Your own data in Google Drive</h3>
-          <p>A class exercise, a survey you ran, your team’s tracker. The Sheet or Form it lives in is the source.</p>
-          <div class="acts"><a href="#google">Google recipes</a></div>
-        </div>
-      </div>
-      <p class="often-h"><b>Then: how often does it change?</b></p>
-      <ul class="often">
-        <li><b>Once.</b> Pull it once and build it once: a survey you give once a year becomes one page that doesn’t change.</li>
-        <li><b>Every week or so.</b> Pull it again on a schedule and refresh what you made: a weekly scorecard from the BQ Project. FirstLine’s CEO builds a weekly scorecard this way.</li>
-        <li><b>By itself, all the time,</b> with each person seeing only their own part: that is the last row below.</li>
-      </ul>
-      <div class="first">
-        <div class="n">2</div>
-        <div>
-          <h2>What are you making, and who sees it?</h2>
-          <p>Find the first row that fits, starting from the top. Each one is a step more involved than the one before. Only the last one needs GitHub. Want the trade-offs side by side? Open <a href="#compare">Pros and cons</a> below the rows.</p>
-        </div>
-      </div>
-      <ol class="ladder">
-        <li class="rung">
-          <div class="rung-h"><span class="lvl">Simplest</span><h3>Something for you or for FirstLine staff</h3></div>
-          <p>A page, an explainer, a checklist, or a scorecard you refresh each week.</p>
-          <p><b>A Claude artifact or a Gemini Canvas page.</b> Describe it and the assistant makes it on the spot. A Claude artifact opens for anyone at FirstLine signed in to Claude; a Gemini page can go straight to Google Classroom. For families, use the next row.</p>
-          <div class="acts"><a href="#claude-page">Publish a page</a><a href="#claude-checklist">A checklist</a><a href="#claude-shared">Shared entries</a></div>
+      <p class="lead">Pick the first stop that fits what you want to make. Most tools never go past stop 3. <a href="#words">New to this? The words</a></p>
+
+      <ol class="trail" aria-label="Four ways to build, simplest first">
+        <li class="stop" id="stop-1">
+          <div class="stop-top"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="lvl">1 &middot; Simplest</span></div>
+          <h2>A page or checklist for you or staff</h2>
+          <p class="for">An explainer, a checklist, a weekly scorecard.</p>
+          <p class="how"><b>Make it in the chat:</b> a Claude artifact or a Gemini Canvas page. Ready in minutes.</p>
+          <div class="go"><button type="button" class="pbtn" data-p="p1">Start with a prompt</button><a href="#claude-page">Steps</a></div>
         </li>
-        <li class="rung">
-          <div class="rung-h"><span class="lvl">Simple</span><h3>A page for families, or for everybody</h3></div>
-          <p>Everyone sees the same thing, and you update it when something changes. Nothing about an individual student on a page families can open.</p>
-          <p><b>A Google Site</b>, open to anyone, to FirstLine, or to one team. Or <b>GitHub Pages</b>, if you want it kept as code.</p>
-          <div class="acts"><a href="#google-site">A public page</a><a href="#google-restricted">FirstLine only</a><a href="#github-page">GitHub Pages</a></div>
+        <li class="stop" id="stop-2">
+          <div class="stop-top"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 12h17M12 3.5c3 3.2 3 13.8 0 17M12 3.5c-3 3.2-3 13.8 0 17" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><span class="lvl">2 &middot; Simple</span></div>
+          <h2>A page for families or everybody</h2>
+          <p class="for">The same page for everyone: homework, events, how-tos.</p>
+          <p class="how"><b>A Google Site</b>, open to anyone or to FirstLine only. No code.</p>
+          <div class="go"><button type="button" class="pbtn" data-p="p2">Start with a prompt</button><a href="https://sites.new" target="_blank" rel="noopener">New Site</a><a href="#google-site">Steps</a></div>
         </li>
-        <li class="rung">
-          <div class="rung-h"><span class="lvl">A step more</span><h3>Something that collects answers, sends things, or shows a Sheet</h3></div>
-          <p>A sign-up, a survey, a weekly email, or a page or chart over a Sheet that keeps filling up or that you refresh from FirstLine’s data.</p>
-          <p><b>Google Forms, Sheets and Apps Script.</b> Claude writes the script; you paste it in.</p>
-          <div class="acts"><a href="#google-auto">Survey with emails</a><a href="#google-webapp">A Sheet as a page</a><a href="#claude-sheet">FirstLine data into a Sheet</a><a href="#google-looker">Charts</a></div>
+        <li class="stop" id="stop-3">
+          <div class="stop-top"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 8.5l1.5 1.5 3-3M8.5 14h7M8.5 17h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="lvl">3 &middot; A step more</span></div>
+          <h2>Something that collects answers or sends things</h2>
+          <p class="for">A sign-up, a survey, a weekly email, a page over a Sheet.</p>
+          <p class="how"><b>Google Forms, Sheets and Apps Script.</b> The assistant writes the script; you paste it in.</p>
+          <div class="go"><button type="button" class="pbtn" data-p="p3">Start with a prompt</button><a href="https://forms.new" target="_blank" rel="noopener">New Form</a><a href="#google-auto">Steps</a></div>
         </li>
-        <li class="rung big">
-          <div class="rung-h"><span class="lvl">Most involved</span><h3>It refreshes by itself, and people see different things</h3></div>
-          <p>Any one of these:</p>
-          <ul>
-            <li>FirstLine’s data has to <b>refresh by itself</b>, with nobody pulling it;</li>
-            <li>people see <b>different things by role or school</b>;</li>
-            <li>it keeps <b>records someone reviews</b> or signs off later, or you’ll compare them <b>over time or across schools</b>;</li>
-            <li><b>students</b> use it.</li>
-          </ul>
-          <p><b>The FirstLine starter kit.</b> A real web app with its own database, built in claude.ai/code in your browser. <b>This is the only row that needs GitHub.</b> Fill in one form; we add you to GitHub, make your tool and email you its address.</p>
-          <div class="acts"><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">Request your tool</a><a href="#backend">How it works</a></div>
+        <li class="stop big" id="stop-4">
+          <div class="stop-top"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><span class="lvl">4 &middot; Most involved</span></div>
+          <h2>It refreshes itself and people see different things</h2>
+          <p class="for">FirstLine&rsquo;s data on its own, views by role or school, records reviewed later, or students use it.</p>
+          <p class="how"><b>The FirstLine starter kit.</b> A real web app. The only stop that needs GitHub.</p>
+          <div class="go"><button type="button" class="pbtn" data-p="p4">Plan it with a prompt</button><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">Request your tool</a></div>
         </li>
       </ol>
-      <details class="fold" id="compare"><summary>Pros and cons: where a page can live<small>from a Claude artifact to the starter kit</small></summary><div class="inner">
-        <p class="lead">The same page can live in several places. The biggest difference is <b>who can open it</b>. Listed from least to most involved.</p>
-        <p class="checked">Last checked 13 October 2026 against each company’s own help pages (sources at the bottom). These change every few months; check again before relying on a detail.</p>
-        <div class="cmp">
-          <div class="opt"><h3>A Claude artifact</h3>
-            <p><b>Who can open it:</b> people you invite, or anyone at FirstLine, signed in to FirstLine’s Claude. A link for people outside FirstLine works only if FirstLine’s Claude Owner turns that on. Anthropic’s pages disagree on whether those viewers need a Claude account (the help center says yes; the Claude Code docs say no), so test it before you promise a page to families.</p>
-            <p><b>Good:</b> fastest. Describe it and it appears; ask for changes in the same chat and the link stays the same. Can remember each person’s entries, keep entries everyone shares, and ask Claude questions from inside the page.</p>
-            <p><b>Watch out:</b> lives in your Claude account, not in GitHub. A page that uses connected apps or asks Claude can never be shared outside FirstLine.</p>
-            <p class="best">Best for: a page, checklist or weekly scorecard for FirstLine staff. <a href="#claude-page">Recipe</a></p></div>
-          <div class="opt"><h3>Gemini (Canvas)</h3>
-            <p><b>Who can open it:</b> <span class="ui">Share &amp; export</span> → <span class="ui">Share</span> gives a link, and <span class="ui">Share to Classroom</span> posts it to a class; both follow FirstLine’s Drive sharing settings.</p>
-            <p><b>Good:</b> every staff member already has it with their FirstLine Google account. It builds a page, quiz or small app. Gemini Notebook (formerly NotebookLM) notebooks can be shared with colleagues as viewers or editors.</p>
-            <p><b>Watch out:</b> Google says anyone with the link to an app can view and edit the data it keeps, so nothing about students. Gems are becoming “skills” (rolling out October 2026); on school accounts, Gems stop working no sooner than June 1, 2027, and moved Gems arrive switched off until you turn them on.</p>
-            <p class="best">Best for: a quick page, quiz or app, especially for a class.</p></div>
-          <div class="opt"><h3>ChatGPT for Teachers</h3>
-            <p><b>Who can open it:</b> shared chats and Projects open for people in the same ChatGPT workspace. Colleagues outside your workspace can’t open them, so to share a page widely, put the code in one of the options below. OpenAI’s new <b>Sites</b> publishing is in beta for workspaces, switched on by an admin; check whether your account shows it.</p>
-            <p><b>Good:</b> free for verified U.S. K-12 educators through June 2028, with FERPA-aligned protections and no training on your chats by default. Strong at drafting a page and writing the code for any option below; connects to Google Drive. Codex, OpenAI’s coding assistant, can work on code kept in GitHub.</p>
-            <p><b>Watch out:</b> OpenAI is retiring custom GPTs (December 11, 2026 for Enterprise workspaces, other plans expected to follow), so keep reusable instructions in a Project instead. A page made here stays in your ChatGPT until you publish its code somewhere.</p>
-            <p class="best">Best for: drafting and code for any option on this list, if ChatGPT is what you know.</p></div>
-          <div class="opt"><h3>A Google Site</h3>
-            <p><b>Who can open it:</b> your choice: <span class="ui">Public</span> (families too), anyone at FirstLine, or named people and groups.</p>
-            <p><b>Good:</b> no code, just clicks. Opens on a phone. The address never changes and a colleague can edit it with you. <span class="ui">Insert</span> → <span class="ui">Embed</span> takes a page Claude or Gemini wrote.</p>
-            <p><b>Watch out:</b> limited design. You update it by hand. It can’t collect answers or do anything on its own (add a Form for that).</p>
-            <p class="best">Best for: a page for families or all staff. <a href="#google-site">Recipe</a></p></div>
-          <div class="opt"><h3>A Google Sheet as a page (Apps Script)</h3>
-            <p><b>Who can open it:</b> only you, anyone at FirstLine, anyone with a Google account, or anyone at all. A second setting decides whether it reads the Sheet as you or as each viewer.</p>
-            <p><b>Good:</b> the page stays in step with a Sheet or Form. It can send emails (up to 1,500 recipients a day) and run on a schedule. Your own design.</p>
-            <p><b>Watch out:</b> some code (any assistant can write it). Those two settings decide who sees what, and they’re easy to get wrong. Each run stops after 6 minutes. It belongs to the account that made it, so copy the code into GitHub if others will depend on it.</p>
-            <p class="best">Best for: a personal or small-team page over a Sheet; sign-ups, surveys, weekly emails. <a href="#google-webapp">Recipe</a></p></div>
-          <div class="opt"><h3>GitHub Pages</h3>
-            <p><b>Who can open it:</b> anyone with the address. On FirstLine’s GitHub plan (Team) the code can sit in a private repository, but GitHub says the published page is still public. Limiting who opens the page needs GitHub’s Enterprise plan.</p>
-            <p><b>Good:</b> the code is kept in FirstLine’s GitHub with every change recorded, so <b>any AI assistant</b> (Claude, ChatGPT and Codex, Gemini) can open it and change it later, and someone else can pick it up. Free, fast, any design.</p>
-            <p><b>Watch out:</b> a page only: no sign-in, nothing stored. So nothing about a student or staff member, even from a private repository. Needs a GitHub account in FirstLine’s organization.</p>
-            <p class="best">Best for: a page for families or everybody that you want kept as code. <a href="#github-page">Recipe</a></p></div>
-          <div class="opt"><h3>The starter kit (a web app on Cloud Run)</h3>
-            <p><b>Who can open it:</b> anyone with a FirstLine sign-in, each seeing only what their role and school allow; families or students too, if it’s set up for them.</p>
-            <p><b>Good:</b> reads FirstLine’s data on its own and keeps its own records. Code in a private repository in FirstLine’s GitHub, so any assistant can work on it and someone else can take it over.</p>
-            <p><b>Watch out:</b> the most to learn. A request form, GitHub, and a fuller review before people use it. Days, not minutes.</p>
-            <p class="best">Best for: the last row only. <a href="#backend">How it works</a></p></div>
-        </div>
-        <div class="why">
-          <h2>Why FirstLine chose Claude Enterprise, and why you should still try the others</h2>
-          <ul class="steps4">
-            <li><b>Projects for all of FirstLine.</b> A Claude Project can be shared with everyone at FirstLine, to view and use or to edit. <b>BigQuery Student Data</b> is one: everyone opens the same Project and each person sees only their own students.</li>
-            <li><b>Pages anyone at FirstLine can open.</b> A Claude artifact shared with FirstLine opens for any colleague signed in to Claude, with no copying or re-sharing.</li>
-            <li><b>One shared place.</b> Because FirstLine is one Claude workspace, a Project or page made by one person can be used by everyone.</li>
-          </ul>
-          <p>None of that is a reason not to use ChatGPT for Teachers, Gemini or Codex. Each can draft the pages and write the code for every option on this list. Because a tool’s code goes to FirstLine’s GitHub and its data to FirstLine’s databases, whatever you build can be picked up later with any of them. Try the one you like.</p>
-        </div>
-        <p class="checked">Sources: Anthropic, <a href="https://support.claude.com/en/articles/9547008-publish-and-share-artifacts" target="_blank" rel="noopener">sharing artifacts</a> and <a href="https://support.claude.com/en/articles/16994751-artifacts-admin-guide-for-team-and-enterprise-plans" target="_blank" rel="noopener">admin guide</a>. Google, <a href="https://support.google.com/gemini/answer/16047321" target="_blank" rel="noopener">Canvas</a>, <a href="https://workspaceupdates.googleblog.com/2026/04/share-chats-canvases-and-generated-media-from-the-Gemini-app-securely-via-Google-Drive.html" target="_blank" rel="noopener">sharing through Drive</a>, <a href="https://workspaceupdates.googleblog.com/2026/09/skills-gemini-app-workspace.html" target="_blank" rel="noopener">Gems to skills</a>, <a href="https://support.google.com/sites/answer/6372880" target="_blank" rel="noopener">Sites</a>, <a href="https://developers.google.com/apps-script/guides/web" target="_blank" rel="noopener">Apps Script web apps</a> and <a href="https://developers.google.com/apps-script/guides/services/quotas" target="_blank" rel="noopener">quotas</a>. OpenAI, <a href="https://help.openai.com/en/articles/12844995-chatgpt-for-teachers" target="_blank" rel="noopener">ChatGPT for Teachers</a>, <a href="https://help.openai.com/en/articles/7925741-chatgpt-shared-links-faq" target="_blank" rel="noopener">shared links</a> and <a href="https://help.openai.com/en/articles/20001339-creating-and-using-chatgpt-sites" target="_blank" rel="noopener">Sites</a>, <a href="https://help.openai.com/en/articles/10169521" target="_blank" rel="noopener">Projects</a>, <a href="https://help.openai.com/en/articles/8555535" target="_blank" rel="noopener">custom GPTs</a>, <a href="https://help.openai.com/en/articles/11369540" target="_blank" rel="noopener">Codex</a>. More from Anthropic: <a href="https://support.claude.com/en/articles/9519177" target="_blank" rel="noopener">sharing Projects</a>, <a href="https://code.claude.com/docs/en/artifacts" target="_blank" rel="noopener">Claude Code artifacts</a>. More from Google: <a href="https://knowledge.workspace.google.com/p/gems-migration" target="_blank" rel="noopener">Gems migration</a>, <a href="https://workspaceupdates.googleblog.com/2026/06/educators-and-students-can-now-share-Gemini-Canvas-creations-directly-to-Google-Classroom.html" target="_blank" rel="noopener">Share to Classroom</a>, <a href="https://support.google.com/gemininotebook/answer/16206563" target="_blank" rel="noopener">sharing Gemini Notebook</a>. GitHub, <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">what is GitHub Pages</a> and <a href="https://docs.github.com/en/enterprise-cloud@latest/pages/getting-started-with-github-pages/changing-the-visibility-of-your-github-pages-site" target="_blank" rel="noopener">page visibility</a>.</p>
-      </div></details>
-      <p class="muted small" style="margin-top:10px">Not sure which row? <a href="#path">Answer six questions</a> and you’ll get the exact steps.</p>
-      <div class="first">
-        <div class="n">3</div>
-        <div>
-          <h2>Describe it to your AI assistant: your data, what you’re making, who sees it</h2>
-          <p>Use any approved assistant, <b>signed in with your FirstLine account</b>: Claude, Gemini, ChatGPT for Teachers or Codex. A personal account doesn’t carry FirstLine’s privacy protections. Pulling FirstLine’s data through the BQ Project happens in Claude; everything else works in any of them. Say all three things, so the assistant builds it that way and doesn’t pick a different path for you.</p>
-          <p class="say">“I’m a <b>[your role]</b> at FirstLine. My data comes from <b>[FirstLine’s data through the BQ Project / a Sheet or Form in my Drive / nothing, I write it]</b> and changes <b>[once / every week / all the time]</b>. I want <b>[what it does]</b> for <b>[who sees it]</b>, built as <b>[the row you picked]</b>. Walk me through it step by step.”</p>
-          <ul class="when">
-            <li><i>“…My data comes from a Google Form and changes as families sign up. I want a sign-up for Saturday tutoring for families at my school, built as a Google Form and Sheet.”</i></li>
-            <li><i>“…My data comes from FirstLine’s data through the BQ Project and changes every week. I want a weekly scorecard of my school’s attendance and assessment results for me and my supervisor, built as a Claude artifact I refresh each Monday.”</i></li>
-          </ul>
-          <div class="acts"><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a><a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a><a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT for Teachers</a></div>
-        </div>
+
+      <div class="prompt-box" id="prompt-box" hidden>
+        <div class="pb-head"><b id="pb-title">Your prompt</b><button type="button" class="pb-x" id="pb-close" aria-label="Close">&times;</button></div>
+        <p class="small muted">Fill in the brackets, then paste it into the assistant. Claude and ChatGPT open with it already typed in. Use your FirstLine account.</p>
+        <textarea id="pb-text" rows="6" aria-label="Prompt"></textarea>
+        <div class="go"><button type="button" class="btn-sm" id="pb-copy">Copy</button><a id="pb-claude" class="btn-sm" href="https://claude.ai" target="_blank" rel="noopener">Open in Claude</a><a id="pb-gpt" class="btn-sm" href="https://chatgpt.com" target="_blank" rel="noopener">Open in ChatGPT</a><a class="btn-sm" href="https://gemini.google.com" target="_blank" rel="noopener">Open Gemini, then paste</a></div>
       </div>
-      <div class="first">
-        <div class="n">4</div>
-        <div>
-          <h2>Check it before others rely on it</h2>
-          <p>Go through the short checklist, then show it to your supervisor. Tools that run on their own, keep records or that students use get a fuller review.</p>
-          <div class="acts"><a href="#check">The checklist</a></div>
-        </div>
+
+      <p class="unsure">Not sure which stop? <a href="#path">Answer six questions</a> and you&rsquo;ll get the exact steps. Want the trade-offs side by side? <a href="#compare">Compare where a page can live</a>.</p>
+
+      <div class="also">
+        <a class="also-i" href="#source"><b>Start from your data</b><span>Where it comes from and how often it changes decides the stop.</span></a>
+        <a class="also-i" href="#describe"><b>Write your own prompt</b><span>The fill-in-the-blanks version, for any assistant.</span></a>
+        <a class="also-i" href="#check"><b>Check it before others rely on it</b><span>A short checklist, then your supervisor.</span></a>
       </div>
+
+      
     </section>
     <section class="pathways" id="path">
       <h2 class="ref-h">Which path is yours?</h2>
@@ -526,7 +446,7 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
     </section>
     <section>
       <h2 class="ref-h">Rules for every tool</h2>
-      <ul class="rules">
+      <ul class="rules grid2">
         <li><p><b>Use AI with your FirstLine account.</b> Claude, Gemini, ChatGPT for Teachers or Codex, signed in as you at FirstLine. Never a personal account for anything about students or staff.</p></li>
         <li><p><b>Keep it in the two places.</b> Code in FirstLine’s GitHub; data in FirstLine’s databases. Not on your laptop, not only in a chat.</p></li>
         <li><p><b>It looks like FirstLine.</b> Navy <code>#002F60</code>, orange <code>#E47727</code>, Open Sans on screen. The rest is in the <a href="https://drive.google.com/drive/u/0/folders/1hWkHbBs_c6eLDvDjwCOIUoykutwxz6kC" target="_blank" rel="noopener">FirstLine branding guide</a>.</p></li>
@@ -534,6 +454,7 @@ details.fold .recipe:first-of-type { margin-top: 20px; }
         <li><p><b>Student information goes only to the people who need it.</b> A Sheet shared with the right staff is fine day to day. Trends over time or across schools belong on the back end.</p></li>
         <li><p><b>It has an owner.</b> One named person keeps it running. If you change roles, hand it over first.</p></li>
       </ul>
+
     </section>
 <h2 class="ref-h">Step-by-step recipes</h2><p class="muted">Open the one you need.</p><details class="fold" id="claude"><summary>Claude<small>claude.ai</small></summary><div class="inner"><p class="lead">For drafts, one-off pages and small interactive tools you build by describing them, and for asking questions of FirstLine’s data. Everything here runs on your FirstLine Claude account.</p><div class="pagebox"><div><div class="col-h">What you need</div><ul class="rules"><li><p>Go to <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, choose <span class="ui">Continue with Google</span> and use your FirstLine account. That puts you in FirstLine’s Enterprise workspace.</p></li><li><p>Never use a personal Claude account for FirstLine work. The data protections come with the FirstLine one.</p></li></ul></div><div><div class="col-h">Recipes</div><ol class="toc"><li><a href="#claude-page">Publish a page from Claude</a></li><li><a href="#claude-checklist">An interactive checklist that remembers each person’s ticks</a></li><li><a href="#claude-shared">A small tool with shared entries</a></li><li><a href="#claude-bq">Ask questions of FirstLine’s data: the BQ Project</a></li><li><a href="#claude-sheet">Pull FirstLine data into a Sheet, then publish it</a></li></ol></div></div><article class="recipe" id="claude-page"><h2>Publish a page from Claude</h2><p class="aud">Fastest. FirstLine staff signed in to Claude.</p><p class="ex"><b>Example:</b> A weekly homework page or a one-page explainer. Write the content in a Doc first, with nothing about an individual student in it.</p><ol class="how"><li>In Claude: <i>"Turn this into a single mobile-friendly HTML page. FirstLine colors: navy #002F60, orange #E47727. Font: Open Sans."</i> Paste your content.</li><li>The page appears in the panel on the right. Use <span class="ui">Preview</span> to see it. Ask for changes in the chat; each one updates the same page.</li><li>At the top of that panel click <span class="ui">Share</span> → <span class="ui">Publish</span>. Copy the link (claude.ai/artifact/…).</li><li>Who can open it: people signed in to FirstLine’s Claude. Nobody without a Claude account can open it, even with the link, so it is not for families or students. Send the link to one colleague to check it opens for them.</li><li>To update: keep working in the same chat, then <span class="ui">Share</span> → <span class="ui">Publish</span> again. The link stays the same.</li></ol></article><article class="recipe" id="claude-checklist"><h2>An interactive checklist that remembers each person’s ticks</h2><p class="aud">Staff. Each viewer’s ticks stay in their own browser.</p><p class="ex"><b>Example:</b> A weekly team checklist that lives on paper today.</p><ol class="how"><li>Paste the checklist into Claude: <i>"Make an interactive checklist page. Remember each viewer’s ticks in their own browser. FirstLine colors, Open Sans."</i></li><li>In Preview: tick three boxes, reload, and confirm they stayed ticked.</li><li><span class="ui">Share</span> → <span class="ui">Publish</span>. Copy the link and write down who can open it once you have tested.</li><li>Ticks live in each person’s browser. They do not follow someone to another device, and nobody else sees them.</li></ol></article><article class="recipe" id="claude-shared"><h2>A small tool with shared entries</h2><p class="aud">A sign-up or simple shared tracker for staff.</p><p class="ex"><b>Example:</b> A sign-up sheet for PD sessions, or a shared list of who is covering which duty.</p><ol class="how"><li>Ask Claude for a page whose entries are shared across everyone who opens it. This uses a page capability for shared data that FirstLine’s Claude administrator enables.</li><li>Publish, share it with the staff who need it, and write down who can see and who can edit.</li><li>Not for student information, and not for anything that sends email.</li></ol></article><article class="recipe" id="claude-bq"><h2>Ask questions of FirstLine’s data: the BQ Project</h2><p class="aud">Ask in plain English; see only your own students.</p><p class="ex"><b>Example:</b> "Which of my students missed more than three days this month?" answered from the real attendance data.</p><ol class="how"><li>In claude.ai, open <span class="ui">Projects</span>, then the <span class="ui">Organization</span> tab, and choose <b>BigQuery Student Data</b>. It is shared with all of FirstLine, so nobody has to add you.</li><li>In the Project, when it asks you to connect BigQuery, sign in with your own FirstLine Google account. The connection knows who you are, and the data only returns the students you are allowed to see: your school, or several schools if you lead more than one.</li><li>If it asks which project ID to use, the answer is <code>fls-teacher-data</code>.</li><li>Ask in plain English. Never paste student data into the chat; the connection is the only door.</li><li>An empty answer usually means "not one of your students", not missing data.</li></ol></article><article class="recipe" id="claude-sheet"><h2>Pull FirstLine data into a Sheet, then publish it</h2><p class="aud">A school’s live tracker, refreshed by a person through Claude.</p><p class="ex"><b>Example:</b> A real FirstLine tool: one school’s 3rd and 4th grade mastery tracker. Data comes from the BQ Project and a few other sources into a Sheet, with Claude helping automate the pull. An Apps Script web app turns the Sheet into a page with tabs, filters and a support status for each student.</p><ol class="how"><li>Pull the data you need through the BQ Project into a Sheet, with Claude doing the work.</li><li>Publish the Sheet as a page with an Apps Script web app: <a href="#google-webapp">the Google page, "A Sheet as a live web page"</a>.</li><li><b>Set who can see it before anyone opens it.</b> A page with student names and scores must open only for the staff who work with those students. Use <span class="ui">Execute as: User accessing the web app</span> and share the Sheet only with those staff. <span class="ui">Execute as: Me</span> plus <span class="ui">Anyone within FirstLine Schools</span> shows every student to every FirstLine account.</li><li>Someone has to refresh it. When it should update with nobody pulling the data, or other schools want the same page, it has outgrown this route: <a href="#backend-move">Move an Apps Script tool to code</a>.</li></ol></article></div></details><details class="fold" id="google"><summary>Google<small>Sites, Forms, Sheets, Looker Studio, Apps Script</small></summary><div class="inner"><p class="lead">For a page, a form, a tracker or a small automation. Everything here runs on your FirstLine Google account, with nothing to install. Apps Script is under <span class="ui">Extensions</span> → <span class="ui">Apps Script</span> in any Sheet.</p><div class="pagebox"><div><div class="col-h">What you need</div><ul class="rules"><li><p>Your FirstLine Google account. Sites, Forms, Sheets, Looker Studio and Apps Script all run on it. Nothing to set up.</p></li></ul></div><div><div class="col-h">Recipes</div><ol class="toc"><li><a href="#google-site">A public page: Google Sites</a></li><li><a href="#google-restricted">A page only some people can open</a></li><li><a href="#google-webapp">A Sheet as a live web page</a></li><li><a href="#google-looker">Charts from a Sheet: Looker Studio</a></li><li><a href="#google-auto">A PD survey that sends each presenter their own results</a></li></ol></div></div><article class="recipe" id="google-site"><h2>A public page: Google Sites</h2><p class="aud">Families. Anyone with the link.</p><p class="ex"><b>Example:</b> The homework page: a weekly page families open on a phone. Write it in a Doc first: week, reading, math, a note home, links. Remove anything about an individual student.</p><ol class="how"><li>Open <a href="https://sites.google.com/new" target="_blank" rel="noopener">sites.google.com/new</a> signed in with your FirstLine account. Choose <span class="ui">Blank site</span>.</li><li>Paste the content section by section. <span class="ui">Themes</span> → custom: primary color #002F60, accent #E47727, font Open Sans, the logo from the branding guide.</li><li><span class="ui">Publish</span> (top right). Web address: something short like <i>grade5-homework</i>. The site lives at sites.google.com/firstlineschools.org/grade5-homework.</li><li><span class="ui">Who can view my site</span> → <span class="ui">Manage</span>. For families, set the published site to <span class="ui">Anyone</span>. Leave the draft restricted to you and any co-editor.</li><li>Open the link in a private browser window to see exactly what a parent sees.</li><li>To update: edit, then <span class="ui">Publish</span> again. The address never changes.</li></ol></article><article class="recipe" id="google-restricted"><h2>A page only some people can open</h2><p class="aud">FirstLine accounts, one school, or a named team.</p><p class="ex"><b>Example:</b> A weekly team checklist: publish it restricted to your team, and confirm someone outside the team is refused.</p><ol class="how"><li><b>Google Sites, restricted.</b> Build the page as above, then <span class="ui">Publish</span> → <span class="ui">Who can view my site</span> → <span class="ui">Manage</span>.</li><li>Whole network: under the published site choose <span class="ui">Restricted</span>, then <span class="ui">Anyone at FirstLine Schools with the link</span>. A named team or one school: keep <span class="ui">Restricted</span> and add each address, or a Google Group, as a published viewer.</li><li>Test it: open the link in a private window with no FirstLine sign-in. You should get a request-access screen.</li><li><b>Or an Apps Script web app,</b> when you want your own design. In any Sheet: <span class="ui">Extensions</span> → <span class="ui">Apps Script</span>. Replace Code.gs with the code below. <span class="ui">File</span> → <span class="ui">New</span> → <span class="ui">HTML</span>, name it <i>Index</i>, and paste the page Claude made you.<div class="code"><div class="code-bar"><span>Code.gs</span><button type="button" class="copy" data-for="code-5">Copy</button></div><pre id="code-5">function doGet() {
   return HtmlService.createHtmlOutputFromFile(&#x27;Index&#x27;)
@@ -638,7 +559,108 @@ function esc(t) {
       </div>
 <p class="lead">A real web app behind FirstLine sign-in that reads FirstLine’s data straight from BigQuery and keeps its own data in its own database, with each person seeing only what their role allows. You build it in claude.ai/code, in a browser, with no terminal. One FirstLine tool was built exactly this way, start to finish, in four days.</p><div class="pagebox"><div><div class="col-h">What you need</div><ul class="rules"><li><p>A free GitHub account. You never create anything on GitHub yourself: one form gets you added and your tool made.</p></li><li><p>Your FirstLine Claude account, used at <a href="https://claude.ai/code" target="_blank" rel="noopener">claude.ai/code</a>. An ordinary Claude chat can read a repository but cannot change one.</p></li></ul></div><div><div class="col-h">Recipes</div><ol class="toc"><li><a href="#backend-start">Start a tool</a></li><li><a href="#backend-data">Keep your own data</a></li><li><a href="#backend-loop">Make one change</a></li><li><a href="#backend-stuck">When you get stuck</a></li><li><a href="#backend-move">Move an Apps Script tool to code</a></li><li><a href="#backend-students">A tool students use</a></li></ol></div></div><article class="recipe" id="backend-start"><h2>Start a tool</h2><p class="aud">Once per tool. You fill in one form; your tool arrives ready to build.</p><p class="ex"><b>Example:</b> A form staff fill in on a phone, where each school’s leaders see only their own school’s entries, and a monthly count for the network.</p><ol class="how"><li><b>You:</b> make a free GitHub account at <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> with your FirstLine email, and turn on two-factor authentication when it asks. Once, ever.</li><li><b>You:</b> write down, in a Doc, what the tool does, who uses it, and what each person may see. Ask the person who does the work how they do it today before you decide who the tool is for.</li><li><b>You:</b> fill in the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfUkYMUjHOgXQHNr6aOHAMHKH15gVCa2o2Gvv6wk8ZRQnDqQA/viewform" target="_blank" rel="noopener">FirstLine GitHub requests</a> form. Choose <i>Set up a back-end tool</i>, and give your GitHub username, a short name for the tool (lowercase with hyphens, like <i>pd-survey</i>), who uses it, and which FirstLine data it needs.</li><li><b>FirstLine’s GitHub admins:</b> add you to FirstLine’s GitHub, make your tool from the starter kit, and connect it to Google Cloud with the data you asked for.</li><li><b>You:</b> get two emails. One is a GitHub invitation: click <span class="ui">Accept</span>. The other gives your tool’s name and web address. Your tool already works: open the address and you see a blank FirstLine page that already knows who you are.</li><li><b>You:</b> open <a href="https://claude.ai/code" target="_blank" rel="noopener">claude.ai/code</a>, choose your tool from the list, paste your Doc and say: <i>"Here is what I want this tool to do. Ask me questions until you understand it, then write it up as the plan. Don’t build anything yet."</i> Claude writes the plan into your tool; read it, and correct anything it got wrong.</li><li>From here on, every change is the six moves in <a href="#backend-loop">Make one change</a>.</li></ol></article><article class="recipe" id="backend-data"><h2>Keep your own data</h2><p class="aud">Your tool’s own database, instead of a Sheet in someone’s Drive.</p><p class="ex"><b>Example:</b> A PD survey tool keeps every response; a walkthrough tool keeps each leader’s notes. Because it lives in BigQuery next to FirstLine’s data, you can compare it over time and across schools, and line it up with rosters or scores.</p><ol class="how"><li>Tell Claude what to keep, in plain words: <i>"Each response should keep the session, the presenter, a 1 to 5 rating, and two comments."</i> Claude adds it to your tool’s list of tables. Merge the change as usual.</li><li>Open your tool and press <span class="ui">Create tables</span>. The tool creates them itself, in its own dataset in FirstLine’s tools project. Nobody else has to do anything.</li><li>Every row records who added it and when, automatically. Nothing is ever deleted; a wrong entry is marked void with a reason.</li><li>Adding a column later is a new change: tell Claude, merge, press <span class="ui">Create tables</span> again.</li><li>Today a tool’s own data lives in <b>BigQuery</b>, built for comparing over time. <b>Firestore</b>, a database built for records people edit all day, is being tested as a second option. See <a href="#data">Where data lives</a>.</li></ol></article><article class="recipe" id="backend-loop"><h2>Make one change</h2><p class="aud">The same six moves, every time.</p><ol class="how"><li>At claude.ai/code, under the box where you type, choose your repository. Leave the branch on <span class="ui">main</span>.</li><li>Type what you want and press Enter. One change per request.</li><li>Claude reads the repository (starting with CLAUDE.md), writes the code and its tests, and commits to a new branch. You watch it work.</li><li>When it finishes you see a line like <span class="ui">+42 -18</span>. Click it and read what changed, file by file. You are the reviewer; if something is wrong, say so in the same conversation.</li><li>Click <span class="ui">Create PR</span> and open it as a full pull request.</li><li>On GitHub, wait for the green tick, then <span class="ui">Merge pull request</span>. About two minutes later the change is live. Open the tool and use it.</li><li><b>Keep the branch current.</b> Claude’s branch is copied from main when the conversation starts and doesn’t move. If anything has merged since, start your next request with: <i>"Merge the latest main into this branch before you start, and tell me anything that conflicts."</i></li></ol></article><article class="recipe" id="backend-stuck"><h2>When you get stuck</h2><p class="aud">Everything here you do yourself, in the browser.</p><ol class="how"><li><b>The tool says its tables are missing:</b> open the tool and press <span class="ui">Create tables</span>.</li><li><b>You need a real job title or school name:</b> press the lookup buttons on the tool’s setup page and copy the result into your chat.</li><li><b>The tool says it needs a permission it can’t give itself:</b> press <span class="ui">Copy the request</span> and send it to the person the tool names.</li><li><b>The check is red on your pull request:</b> click <span class="ui">Details</span>, copy the red lines into your chat and ask for a fix. A red test means the change broke something the tool promised: fix the code, not the test.</li><li><b>The deploy is red after a merge:</b> <span class="ui">Actions</span> tab → the red run → the failed step → copy the red lines into your chat. The previous version keeps running while you fix it.</li><li><b>Claude tells you to run a command:</b> tell it you have no terminal and ask for another way.</li><li><b>Four things need an administrator,</b> and the tool names them when it hits one: a password or API key; FirstLine data the tool wasn’t set up to read; making it reachable without a FirstLine sign-in; changing a Cloud Run setting.</li></ol></article><article class="recipe" id="backend-move"><h2>Move an Apps Script tool to code</h2><p class="aud">For a tool that works and has outgrown its Sheet.</p><p class="ex"><b>Example:</b> The school mastery tracker: data pulled through the BQ Project into a Sheet, published with Apps Script. As code, it reads FirstLine’s data directly with nobody pulling it, each school sees only its own students, and every change is recorded.</p><ol class="how"><li><b>Keep the Apps Script version running.</b> People keep using it until the new one matches it.</li><li>Start a tool from the starter kit (<a href="#backend-start">Start a tool</a>). In the setup request, list everything the Sheet is built from: which FirstLine data (rosters, assessments, attendance) and anything outside the warehouse. The FirstLine data becomes a direct read; the reply says how the rest gets in.</li><li>Put the Apps Script code in the repository so Claude can read the rules instead of guessing them. In the script editor, open each file (Code.gs, Index.html and the rest), copy it, and on GitHub use <span class="ui">Add file</span> → <span class="ui">Create new file</span> to save it under <i>apps-script/</i> with the same name.</li><li>Write down what the page already does: a screenshot of every tab, each filter, each status and the exact rule that sets it (for example: 75–100% strong, 65–74% approaching, 50–64% partial, 0–49% significant gap), and who may see it (staff at that school).</li><li>First request in claude.ai/code: <i>"Read the plan and everything in apps-script/. Don’t write code yet. Tell me how you would build this, which data you would read, and every rule you can’t find in either."</i> Answer its questions; it adds your answers to the plan.</li><li>Build one tab at a time, starting with the Overview, one change per pull request.</li><li><b>Check the numbers against the old page.</b> Pick ten students and compare them side by side. Every difference is either a bug or a rule the plan missed; fix the plan or the code, then check again.</li><li>When they match, send people the new address. Then retire the old page: in the script editor, <span class="ui">Deploy</span> → <span class="ui">Manage deployments</span> → select it → <span class="ui">Archive</span>.</li></ol></article><article class="recipe" id="backend-students"><h2>A tool students use</h2><p class="aud">Approval first. This is the only route.</p><p class="ex"><b>Example:</b> A multiplication game that remembers which facts each student has mastered, picks up where they left off, and shows the teacher who needs help. Not a Claude page (students have no Claude accounts), not a Sheet in your Drive, not an outside service.</p><ol class="how"><li>Write five decisions in a Doc: what it is for; what it remembers; what it never collects (name, photo, free text about a child); how it knows which student it is (their FirstLine school account, or an anonymous code the teacher holds); who sees what; when data is deleted.</li><li>Take the Doc to your supervisor and the academic lead for the subject. The answer is yes, no, or a smaller yes.</li><li>Start the tool as above, saying in the setup request that students will use it.</li><li>Build the smallest playable version first, one change at a time.</li><li>Pilot with one class, teacher in the room. Check it against the plan, and ask a second AI to attack it against that list. Save what it finds.</li><li>Sign-off before any other class uses it (see <a href="#check">Before people use it</a>).</li></ol></article>
       <h2>What you get</h2>
-      <p>A small web app on Google Cloud Run, in FirstLine’s project for builder tools. FirstLine sign-in sits in front of it, so nobody without a FirstLine account reaches it. It looks people up by job title and school in the staff roster, reads only the FirstLine data it was set up for, and keeps its own records (see <a href="#data">Where data lives</a>). Every merge deploys it in about two minutes and checks that it answers. Every morning a health check confirms it’s up.</p></div></details><h2 class="ref-h">Good to know</h2><details class="fold" id="check"><summary>Before people use it<small>the checklist and sign-off</small></summary><div class="inner">
+      <p>A small web app on Google Cloud Run, in FirstLine’s project for builder tools. FirstLine sign-in sits in front of it, so nobody without a FirstLine account reaches it. It looks people up by job title and school in the staff roster, reads only the FirstLine data it was set up for, and keeps its own records (see <a href="#data">Where data lives</a>). Every merge deploys it in about two minutes and checks that it answers. Every morning a health check confirms it’s up.</p></div></details><h2 class="ref-h">Good to know</h2><details class="fold" id="words"><summary>New to this? The words on this page<small>tool, app, page, artifact, GitHub…</small></summary><div class="inner">
+        <p class="lead">You don’t need any of these words to start. They’re here so the rest of the page makes sense.</p>
+        <dl class="words">
+          <dt>Tool, or app</dt><dd>The same thing on this page: anything you make that other people use. A page, a form, a checklist, a tracker or a full web app are all tools.</dd>
+          <dt>Source of data</dt><dd>The one place the real answer lives, sometimes called the source of truth. For FirstLine’s official data that is BigQuery; for your own class or team data it is usually a Sheet or Form in Google Drive.</dd>
+          <dt>Page, or site</dt><dd>Something people open in a web browser by its address (a link). A site is one or more pages.</dd>
+          <dt>Static page</dt><dd>A page that says the same thing to everyone until you change it by hand. The simplest kind of tool.</dd>
+          <dt>Artifact</dt><dd>What Claude calls a page or small tool it makes for you in the chat. It shows up next to the conversation, and sharing it gives a link that opens only for people signed in to FirstLine’s Claude.</dd>
+          <dt>Publish, share link</dt><dd>Turning what you made into an address other people can open. Who can open it (anyone, only FirstLine, only your team) is a setting you choose.</dd>
+          <dt>Sign-in</dt><dd>Logging in with your FirstLine Google account. “Behind FirstLine sign-in” means only people with a FirstLine account can open it.</dd>
+          <dt>Google Site</dt><dd>Google’s page builder. You build by clicking, not by writing code.</dd>
+          <dt>Apps Script</dt><dd>Small programs attached to a Google Sheet or Form. They can send an email, run on a schedule, or show a Sheet as a page. Claude writes them; you paste them in.</dd>
+          <dt>Code</dt><dd>The written instructions that make a page or app work. The AI assistant writes it; you describe what you want.</dd>
+          <dt>FirstLine’s data</dt><dd>Everything from FirstLine’s systems: assessments, attendance, behavior, rosters. It is kept in <b>BigQuery</b>, FirstLine’s data warehouse.</dd>
+          <dt>The BQ Project</dt><dd>A project in Claude that pulls FirstLine’s data for you in plain English, once or every week, and only shows you the students you’re allowed to see.</dd>
+          <dt>Database</dt><dd>Where a tool keeps what people type into it, so it’s still there tomorrow. A Google Sheet is the simplest kind.</dd>
+          <dt>Server, or back end</dt><dd>A computer that runs your tool all the time: it checks who is signed in, reads FirstLine’s data and saves what people enter. Only the last row needs one.</dd>
+          <dt>GitHub</dt><dd>Where code is kept, with every change recorded. You only need it for GitHub Pages and the starter kit.</dd>
+          <dt>The starter kit</dt><dd>FirstLine’s ready-made beginning for a full web app with sign-in, FirstLine’s data and its own database. You request it with a form.</dd>
+        </dl>
+        <p style="margin-top:12px"><a href="glossary.html"><b>Dive deeper: more technical terms →</b></a> <span class="muted small">containers, Cloud Run, repositories, pull requests, auth, BigQuery and more, in plain words</span></p>
+      </div></details>
+      <details class="fold" id="source"><summary>Start from your data<small>where it comes from, how often it changes</small></summary><div class="inner"><p class="lead">Every tool starts from a source of data, the one place the real answer lives. Where yours comes from, and how often it changes, decides most of the rest.</p><div class="srcs">
+        <div class="src">
+          <h3>Nothing to pull: you write it</h3>
+          <p>An explainer, a homework page, a checklist. You type what it says.</p>
+        </div>
+        <div class="src">
+          <h3>FirstLine’s official data</h3>
+          <p>Anything from FirstLine’s systems: assessments, attendance, behavior, rosters. It is all in <b>BigQuery</b>, and you reach it through the <b>BQ Project</b> in Claude. Use it whether you pull once or every week.</p>
+          <div class="acts"><a href="#claude-bq">The BQ Project</a></div>
+        </div>
+        <div class="src">
+          <h3>Your own data in Google Drive</h3>
+          <p>A class exercise, a survey you ran, your team’s tracker. The Sheet or Form it lives in is the source.</p>
+          <div class="acts"><a href="#google">Google recipes</a></div>
+        </div>
+      </div>
+      <p class="often-h"><b>Then: how often does it change?</b></p>
+      <ul class="often">
+        <li><b>Once.</b> Pull it once and build it once: a survey you give once a year becomes one page that doesn’t change.</li>
+        <li><b>Every week or so.</b> Pull it again on a schedule and refresh what you made: a weekly scorecard from the BQ Project. FirstLine’s CEO builds a weekly scorecard this way.</li>
+        <li><b>By itself, all the time,</b> with each person seeing only their own part: that is the last row below.</li>
+      </ul></div></details>
+      <details class="fold" id="describe"><summary>Write your own prompt<small>for any approved assistant</small></summary><div class="inner"><p>Use any approved assistant, <b>signed in with your FirstLine account</b>: Claude, Gemini, ChatGPT for Teachers or Codex. A personal account doesn’t carry FirstLine’s privacy protections. Pulling FirstLine’s data through the BQ Project happens in Claude; everything else works in any of them. Say all three things, so the assistant builds it that way and doesn’t pick a different path for you.</p>
+          <p class="say">“I’m a <b>[your role]</b> at FirstLine. My data comes from <b>[FirstLine’s data through the BQ Project / a Sheet or Form in my Drive / nothing, I write it]</b> and changes <b>[once / every week / all the time]</b>. I want <b>[what it does]</b> for <b>[who sees it]</b>, built as <b>[the row you picked]</b>. Walk me through it step by step.”</p>
+          <ul class="when">
+            <li><i>“…My data comes from a Google Form and changes as families sign up. I want a sign-up for Saturday tutoring for families at my school, built as a Google Form and Sheet.”</i></li>
+            <li><i>“…My data comes from FirstLine’s data through the BQ Project and changes every week. I want a weekly scorecard of my school’s attendance and assessment results for me and my supervisor, built as a Claude artifact I refresh each Monday.”</i></li>
+          </ul>
+          <div class="acts"><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a><a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a><a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT for Teachers</a></div></details>
+      <details class="fold" id="compare"><summary>Pros and cons: where a page can live<small>from a Claude artifact to the starter kit</small></summary><div class="inner">
+        <p class="lead">The same page can live in several places. The biggest difference is <b>who can open it</b>. Listed from least to most involved.</p>
+        <p class="checked">Last checked 13 October 2026 against each company’s own help pages (sources at the bottom). These change every few months; check again before relying on a detail.</p>
+        <div class="cmp">
+          <div class="opt"><h3>A Claude artifact</h3>
+            <p><b>Who can open it:</b> people you invite, or anyone at FirstLine, signed in to FirstLine’s Claude. A link for people outside FirstLine works only if FirstLine’s Claude Owner turns that on. Anthropic’s pages disagree on whether those viewers need a Claude account (the help center says yes; the Claude Code docs say no), so test it before you promise a page to families.</p>
+            <p><b>Good:</b> fastest. Describe it and it appears; ask for changes in the same chat and the link stays the same. Can remember each person’s entries, keep entries everyone shares, and ask Claude questions from inside the page.</p>
+            <p><b>Watch out:</b> lives in your Claude account, not in GitHub. A page that uses connected apps or asks Claude can never be shared outside FirstLine.</p>
+            <p class="best">Best for: a page, checklist or weekly scorecard for FirstLine staff. <a href="#claude-page">Recipe</a></p></div>
+          <div class="opt"><h3>Gemini (Canvas)</h3>
+            <p><b>Who can open it:</b> <span class="ui">Share &amp; export</span> → <span class="ui">Share</span> gives a link, and <span class="ui">Share to Classroom</span> posts it to a class; both follow FirstLine’s Drive sharing settings.</p>
+            <p><b>Good:</b> every staff member already has it with their FirstLine Google account. It builds a page, quiz or small app. Gemini Notebook (formerly NotebookLM) notebooks can be shared with colleagues as viewers or editors.</p>
+            <p><b>Watch out:</b> Google says anyone with the link to an app can view and edit the data it keeps, so nothing about students. Gems are becoming “skills” (rolling out October 2026); on school accounts, Gems stop working no sooner than June 1, 2027, and moved Gems arrive switched off until you turn them on.</p>
+            <p class="best">Best for: a quick page, quiz or app, especially for a class.</p></div>
+          <div class="opt"><h3>ChatGPT for Teachers</h3>
+            <p><b>Who can open it:</b> shared chats and Projects open for people in the same ChatGPT workspace. Colleagues outside your workspace can’t open them, so to share a page widely, put the code in one of the options below. OpenAI’s new <b>Sites</b> publishing is in beta for workspaces, switched on by an admin; check whether your account shows it.</p>
+            <p><b>Good:</b> free for verified U.S. K-12 educators through June 2028, with FERPA-aligned protections and no training on your chats by default. Strong at drafting a page and writing the code for any option below; connects to Google Drive. Codex, OpenAI’s coding assistant, can work on code kept in GitHub.</p>
+            <p><b>Watch out:</b> OpenAI is retiring custom GPTs (December 11, 2026 for Enterprise workspaces, other plans expected to follow), so keep reusable instructions in a Project instead. A page made here stays in your ChatGPT until you publish its code somewhere.</p>
+            <p class="best">Best for: drafting and code for any option on this list, if ChatGPT is what you know.</p></div>
+          <div class="opt"><h3>A Google Site</h3>
+            <p><b>Who can open it:</b> your choice: <span class="ui">Public</span> (families too), anyone at FirstLine, or named people and groups.</p>
+            <p><b>Good:</b> no code, just clicks. Opens on a phone. The address never changes and a colleague can edit it with you. <span class="ui">Insert</span> → <span class="ui">Embed</span> takes a page Claude or Gemini wrote.</p>
+            <p><b>Watch out:</b> limited design. You update it by hand. It can’t collect answers or do anything on its own (add a Form for that).</p>
+            <p class="best">Best for: a page for families or all staff. <a href="#google-site">Recipe</a></p></div>
+          <div class="opt"><h3>A Google Sheet as a page (Apps Script)</h3>
+            <p><b>Who can open it:</b> only you, anyone at FirstLine, anyone with a Google account, or anyone at all. A second setting decides whether it reads the Sheet as you or as each viewer.</p>
+            <p><b>Good:</b> the page stays in step with a Sheet or Form. It can send emails (up to 1,500 recipients a day) and run on a schedule. Your own design.</p>
+            <p><b>Watch out:</b> some code (any assistant can write it). Those two settings decide who sees what, and they’re easy to get wrong. Each run stops after 6 minutes. It belongs to the account that made it, so copy the code into GitHub if others will depend on it.</p>
+            <p class="best">Best for: a personal or small-team page over a Sheet; sign-ups, surveys, weekly emails. <a href="#google-webapp">Recipe</a></p></div>
+          <div class="opt"><h3>GitHub Pages</h3>
+            <p><b>Who can open it:</b> anyone with the address. On FirstLine’s GitHub plan (Team) the code can sit in a private repository, but GitHub says the published page is still public. Limiting who opens the page needs GitHub’s Enterprise plan.</p>
+            <p><b>Good:</b> the code is kept in FirstLine’s GitHub with every change recorded, so <b>any AI assistant</b> (Claude, ChatGPT and Codex, Gemini) can open it and change it later, and someone else can pick it up. Free, fast, any design.</p>
+            <p><b>Watch out:</b> a page only: no sign-in, nothing stored. So nothing about a student or staff member, even from a private repository. Needs a GitHub account in FirstLine’s organization.</p>
+            <p class="best">Best for: a page for families or everybody that you want kept as code. <a href="#github-page">Recipe</a></p></div>
+          <div class="opt"><h3>The starter kit (a web app on Cloud Run)</h3>
+            <p><b>Who can open it:</b> anyone with a FirstLine sign-in, each seeing only what their role and school allow; families or students too, if it’s set up for them.</p>
+            <p><b>Good:</b> reads FirstLine’s data on its own and keeps its own records. Code in a private repository in FirstLine’s GitHub, so any assistant can work on it and someone else can take it over.</p>
+            <p><b>Watch out:</b> the most to learn. A request form, GitHub, and a fuller review before people use it. Days, not minutes.</p>
+            <p class="best">Best for: the last row only. <a href="#backend">How it works</a></p></div>
+        </div>
+        <div class="why">
+          <h2>Why FirstLine chose Claude Enterprise, and why you should still try the others</h2>
+          <ul class="steps4">
+            <li><b>Projects for all of FirstLine.</b> A Claude Project can be shared with everyone at FirstLine, to view and use or to edit. <b>BigQuery Student Data</b> is one: everyone opens the same Project and each person sees only their own students.</li>
+            <li><b>Pages anyone at FirstLine can open.</b> A Claude artifact shared with FirstLine opens for any colleague signed in to Claude, with no copying or re-sharing.</li>
+            <li><b>One shared place.</b> Because FirstLine is one Claude workspace, a Project or page made by one person can be used by everyone.</li>
+          </ul>
+          <p>None of that is a reason not to use ChatGPT for Teachers, Gemini or Codex. Each can draft the pages and write the code for every option on this list. Because a tool’s code goes to FirstLine’s GitHub and its data to FirstLine’s databases, whatever you build can be picked up later with any of them. Try the one you like.</p>
+        </div>
+        <p class="checked">Sources: Anthropic, <a href="https://support.claude.com/en/articles/9547008-publish-and-share-artifacts" target="_blank" rel="noopener">sharing artifacts</a> and <a href="https://support.claude.com/en/articles/16994751-artifacts-admin-guide-for-team-and-enterprise-plans" target="_blank" rel="noopener">admin guide</a>. Google, <a href="https://support.google.com/gemini/answer/16047321" target="_blank" rel="noopener">Canvas</a>, <a href="https://workspaceupdates.googleblog.com/2026/04/share-chats-canvases-and-generated-media-from-the-Gemini-app-securely-via-Google-Drive.html" target="_blank" rel="noopener">sharing through Drive</a>, <a href="https://workspaceupdates.googleblog.com/2026/09/skills-gemini-app-workspace.html" target="_blank" rel="noopener">Gems to skills</a>, <a href="https://support.google.com/sites/answer/6372880" target="_blank" rel="noopener">Sites</a>, <a href="https://developers.google.com/apps-script/guides/web" target="_blank" rel="noopener">Apps Script web apps</a> and <a href="https://developers.google.com/apps-script/guides/services/quotas" target="_blank" rel="noopener">quotas</a>. OpenAI, <a href="https://help.openai.com/en/articles/12844995-chatgpt-for-teachers" target="_blank" rel="noopener">ChatGPT for Teachers</a>, <a href="https://help.openai.com/en/articles/7925741-chatgpt-shared-links-faq" target="_blank" rel="noopener">shared links</a> and <a href="https://help.openai.com/en/articles/20001339-creating-and-using-chatgpt-sites" target="_blank" rel="noopener">Sites</a>, <a href="https://help.openai.com/en/articles/10169521" target="_blank" rel="noopener">Projects</a>, <a href="https://help.openai.com/en/articles/8555535" target="_blank" rel="noopener">custom GPTs</a>, <a href="https://help.openai.com/en/articles/11369540" target="_blank" rel="noopener">Codex</a>. More from Anthropic: <a href="https://support.claude.com/en/articles/9519177" target="_blank" rel="noopener">sharing Projects</a>, <a href="https://code.claude.com/docs/en/artifacts" target="_blank" rel="noopener">Claude Code artifacts</a>. More from Google: <a href="https://knowledge.workspace.google.com/p/gems-migration" target="_blank" rel="noopener">Gems migration</a>, <a href="https://workspaceupdates.googleblog.com/2026/06/educators-and-students-can-now-share-Gemini-Canvas-creations-directly-to-Google-Classroom.html" target="_blank" rel="noopener">Share to Classroom</a>, <a href="https://support.google.com/gemininotebook/answer/16206563" target="_blank" rel="noopener">sharing Gemini Notebook</a>. GitHub, <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">what is GitHub Pages</a> and <a href="https://docs.github.com/en/enterprise-cloud@latest/pages/getting-started-with-github-pages/changing-the-visibility-of-your-github-pages-site" target="_blank" rel="noopener">page visibility</a>.</p>
+      </div></details><details class="fold" id="check"><summary>Before people use it<small>the checklist and sign-off</small></summary><div class="inner">
       <p class="lead">A short check before anyone other than you relies on the tool. Go down the list for what your tool does; skip what doesn’t apply.</p>
 
       <div class="sts">
@@ -894,6 +916,37 @@ function esc(t) {
   form.addEventListener('change', function () { render(null); });
   load('req');
   show();
+})();
+</script>
+
+<script>
+(function () {
+  var P = {
+    p1: ['A page or checklist', "I'm a [your role] at FirstLine Schools. Make me a one-page [explainer / checklist / weekly scorecard] about [topic] for [who uses it: me / my team / FirstLine staff]. Use FirstLine's colors, navy #002F60 and orange #E47727, and the font Open Sans. Make it work on a phone. Nothing about individual students."],
+    p2: ['A page for families or everybody', "I'm a [your role] at FirstLine Schools. Write the text for a Google Site page for [families / all staff] about [topic]: a title, short sections, and the links to include. Nothing about individual students. Then walk me, click by click, through building it in Google Sites and publishing it to [anyone / FirstLine only]."],
+    p3: ['Something that collects answers or sends things', "I'm a [your role] at FirstLine Schools. I want a Google Form that collects [what], and then [sends each person a confirmation / emails me a weekly summary / shows the answers as a page]. Write the Form questions and the Apps Script, and walk me through pasting the script in (Extensions, then Apps Script) and setting it to run. Only FirstLine accounts should be able to answer."],
+    p4: ['Plan a tool on the starter kit', "I'm a [your role] at FirstLine Schools. I want a tool that [does what] for [who], using [FirstLine's data: attendance / assessments / rosters] and keeping [what people enter]. Each person should see only [their school / their students / their own entries]. Help me write a short plan: who uses it, what each person sees, what it keeps, and what it must never do. Ask me questions first. Don't build anything yet."]
+  };
+  var box = document.getElementById('prompt-box'), ta = document.getElementById('pb-text');
+  function set(k) {
+    document.getElementById('pb-title').textContent = 'Prompt: ' + P[k][0];
+    ta.value = P[k][1]; links();
+    box.hidden = false; box.scrollIntoView({ block: 'nearest' }); ta.focus();
+  }
+  function links() {
+    var q = encodeURIComponent(ta.value);
+    document.getElementById('pb-claude').href = 'https://claude.ai/new?q=' + q;
+    document.getElementById('pb-gpt').href = 'https://chatgpt.com/?q=' + q;
+  }
+  document.querySelectorAll('.pbtn').forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-p')); }); });
+  ta.addEventListener('input', links);
+  document.getElementById('pb-close').addEventListener('click', function () { box.hidden = true; });
+  document.getElementById('pb-copy').addEventListener('click', function (ev) {
+    var b = ev.currentTarget;
+    function done(t) { b.textContent = t; setTimeout(function () { b.textContent = 'Copy'; }, 1600); }
+    try { navigator.clipboard.writeText(ta.value).then(function () { done('Copied'); }, function () { ta.select(); done('Press Ctrl+C'); }); }
+    catch (e) { ta.select(); done('Press Ctrl+C'); }
+  });
 })();
 </script>
 </body>
