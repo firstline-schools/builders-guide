@@ -11,10 +11,10 @@ paths this page describes.
   3 Forms/Sheets/Apps Script; 4 the starter kit, the only stop that needs GitHub; keep it last). Each stop
   has "Start with a prompt" (opens the prompt box: Copy, Open in Claude = claude.ai/new?q=, Open in ChatGPT =
   chatgpt.com/?q=, Gemini = copy then paste) and direct links (sites.new, forms.new). Then one "not sure?"
-  line and four tiles (#source, #describe, #check, #ip). Keep the top to exactly that.
+  line and three tiles (#source, #describe, #check). Keep the top to exactly that.
 - The folds that used to sit on top (#words, #source, #describe, #compare) live under "Good to know".
-- #ip (who owns what you build) sits after the rules; vendor terms checked 2026-10-14; two FirstLine policy
-  lines are marked "To confirm" until FirstLine decides.
+- An IP section ("who owns what you build") is drafted but HELD until FirstLine decides its policy; the
+  draft is in fls-builders/guide/ip_section_draft.html (local), not on the page.
 - Facts about what each platform can do (who can open a shared link, plan limits) change often:
   check the vendor's own documentation before changing them, and keep the "last checked" date on
   `#compare` current.
